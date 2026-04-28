@@ -1,0 +1,16 @@
+services:
+  discovery-service:
+    build: ./discovery-service
+    container_name: discovery-service
+    ports:
+      - 8761:8761
+
+  user-service:
+    build: ./user-service
+    container_name: user-service
+    depends_on:
+      - discovery-service
+    environment:
+        - EUREKA_SERVER=http://discovery-service:8761/eureka
+    ports:
+      - 8081:8081
