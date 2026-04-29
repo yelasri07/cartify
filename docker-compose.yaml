@@ -73,7 +73,7 @@ services:
 
   user-db:
     image: mongo
-    container_name: mongodb
+    container_name: user_mongodb
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${DB_USERNAME}
@@ -86,7 +86,7 @@ services:
 
   product-db:
     image: mongo
-    container_name: mongodb
+    container_name: product_mongodb
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${DB_USERNAME}
@@ -99,7 +99,7 @@ services:
 
   media-db:
     image: mongo
-    container_name: mongodb
+    container_name: media_mongodb
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${DB_USERNAME}
