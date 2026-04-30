@@ -2,8 +2,14 @@ spring:
   application:
     name: product-service
 
+  data:
+    mongodb:
+      uri: mongodb://${DB_USERNAME:buy01}:${DB_PASSWORD:buy01}@localhost:27018/${DB_NAME:buy01}
+
 server:
   port: 8082
+  servlet:
+    context-path: /api
 
 eureka:
   client:
