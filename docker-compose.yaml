@@ -2,6 +2,7 @@ services:
   discovery-service:
     build: ./discovery-service
     container_name: discovery-service
+    restart: always
     ports:
       - 8761:8761
     healthcheck:
@@ -9,9 +10,17 @@ services:
       interval: 5s
       timeout: 2s
       retries: 3
-    networks:
-      - external-network
-      - internal-network
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    depends_on:
+      discovery-service:
+        condition: service_healthy
+    environment:
+      - EUREKA_SERVER=http://discovery-service:8761/eureka
+    ports:
+      - 8080:8080
 
   user-service:
     build: ./user-service
@@ -23,10 +32,6 @@ services:
         condition: service_started
     environment:
       - EUREKA_SERVER=http://discovery-service:8761/eureka
-    ports:
-      - 8081:8081
-    networks:
-      - internal-network
 
   product-service:
     build: ./product-service
@@ -38,10 +43,6 @@ services:
         condition: service_started
     environment:
       - EUREKA_SERVER=http://discovery-service:8761/eureka
-    ports:
-      - 8082:8082
-    networks:
-      - internal-network
 
   media-service:
     build: ./media-service
@@ -53,28 +54,10 @@ services:
         condition: service_started
     environment:
       - EUREKA_SERVER=http://discovery-service:8761/eureka
-    ports:
-      - 8083:8083
-    networks:
-      - internal-network
-
-  api-gateway:
-    build: ./api-gateway
-    container_name: api-gateway
-    depends_on:
-      - discovery-service
-    environment:
-      - EUREKA_SERVER=http://discovery-service:8761/eureka
-    ports:
-      - 8080:8080
-    networks:
-      - external-network
-      - internal-network
 
   user-db:
     image: mongo
     container_name: user_mongodb
-    restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${DB_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
@@ -87,7 +70,6 @@ services:
   product-db:
     image: mongo
     container_name: product_mongodb
-    restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${DB_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
@@ -100,7 +82,6 @@ services:
   media-db:
     image: mongo
     container_name: media_mongodb
-    restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${DB_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
@@ -114,8 +95,3 @@ volumes:
   user_mongodb_data:
   product_mongodb_data:
   media_mongodb_data:
-
-networks:
-  external-network:
-  internal-network:
-    internal: true

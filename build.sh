@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 
 # Stop the script if any command fails
 set -e
@@ -20,7 +20,7 @@ SERVICES=(
 )
 
 # Loop through each service and build
-for SERVICE in $SERVICES; do
+for SERVICE in "${SERVICES[@]}"; do
     if [ -d "$SERVICE" ]; then
         echo -e "${BLUE}📦 Building Service:${NC} $SERVICE"
         
