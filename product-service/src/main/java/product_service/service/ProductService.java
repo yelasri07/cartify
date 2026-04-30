@@ -2,19 +2,37 @@ package product_service.service;
 
 import org.springframework.stereotype.Service;
 
-import product_service.dto.ProductDTO;
-import product_service.exception.BadRequestException;
+import lombok.RequiredArgsConstructor;
+import product_service.dto.ProductDTO.ProductInput;
+import product_service.dto.ProductDTO.ProductOutput;
+import product_service.model.Product;
+import product_service.repository.ProductRepository;
 
 @Service
+@RequiredArgsConstructor
 public class ProductService {
 
-    public void createProduct(ProductDTO.ProductInput productData) {
-        if (productData.price() < 0) {
-            throw new BadRequestException("Product price must be greater or equal than 0");
-        }
-        if (productData.quantity() < 0) {
-            throw new BadRequestException("Product quantity must be greater or equal than 0");
-        }
+    private final ProductRepository productRepository;
+
+    public ProductOutput createProduct(ProductInput productData) {
+        Product product = Product.builder()
+                .name(productData.name())
+                .description(productData.description())
+                .price(productData.price())
+                .quantity(productData.quantity())
+                .userId(null)
+                .build();
+
+        Product createdProduct = this.productRepository.insert(product);
+
+        return ProductOutput.builder()
+                .id(createdProduct.getId())
+                .name(createdProduct.getName())
+                .discription(createdProduct.getDescription())
+                .price(createdProduct.getPrice())
+                .quantity(createdProduct.getQuantity())
+                .userId(createdProduct.getUserId())
+                .build();
     }
 
 }

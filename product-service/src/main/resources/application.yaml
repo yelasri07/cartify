@@ -4,7 +4,7 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb://${DB_USERNAME:buy01}:${DB_PASSWORD:buy01}@localhost:27018/${DB_NAME:buy01}
+      uri: mongodb://${DB_USERNAME:buy01}:${DB_PASSWORD:buy01}@localhost:27018/${DB_NAME:buy01}?authSource=admin
 
 server:
   port: 8082
