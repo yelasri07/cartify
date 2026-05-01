@@ -3,7 +3,7 @@ spring:
     name: user-service
   data:
     mongodb:
-      uri: mongodb://${DB_USERNAME:senior}:${DB_PASSWORD:junior}@localhost:27017/${DB_NAME:buy01}?authSource=admin
+      uri: mongodb://${DB_USERNAME:buy01}:${DB_PASSWORD:buy01}@localhost:27017/${DB_NAME:buy01}?authSource=admin
 
 server:
   port: 8081

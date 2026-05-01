@@ -1,7 +1,6 @@
 package api_gateway.service;
 
 import java.nio.charset.StandardCharsets;
-import java.security.Key;
 
 import javax.crypto.SecretKey;
 

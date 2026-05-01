@@ -6,14 +6,15 @@ spring:
       server:
         webmvc:
           routes:
-          - id: user-service
-            uri: lb://user-service
-            predicates:
-            - Path=/users/**, /auth/**
-          - id: product-service
-            uri: lb://product-service
-            predicates:
-            - Path=/products/**
+            - id: user-service
+              uri: lb://user-service
+              predicates:
+                - Path=/users/**, /auth/**
+            - id: product-service
+              uri: lb://product-service
+              predicates:
+                - Path=/api/products/**
+            
 
 eureka:
   client:
