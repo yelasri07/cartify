@@ -2,9 +2,13 @@ package user_service.service;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.util.Base64;
 import java.util.Date;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -15,8 +19,7 @@ public class JwtService {
 
     private final String secretKey = "y04VbAKcuOebkaYbSwoRNTKimXUaG1RUNoUsrhsPsYR";
 
-
-     private Key getSignInKey() {
+    private Key getSignInKey() {
         byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(keyBytes);
     }
@@ -33,5 +36,16 @@ public class JwtService {
                 .signWith(getSignInKey())
                 .compact();
     }
-    
+
+    public Map<String, Object> extractUserId(String token) throws Exception {
+        String[] parts = token.split("\\.");
+        String payload = parts[1];
+
+        String json = new String(Base64.getUrlDecoder().decode(payload));
+
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> map = mapper.readValue(json, Map.class);
+        return map;
+    }
+
 }

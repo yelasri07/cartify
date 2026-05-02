@@ -5,14 +5,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import user_service.model.User;
 import user_service.model.DTO.AuthDTO.LoginInput;
 import user_service.model.DTO.AuthDTO.RegisterInput;
 import user_service.service.AuthService;
 
 import java.util.Map;
 
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -25,10 +23,8 @@ public class AuthController {
 
     @PostMapping("/register")
     public Map<String, Object> register(@RequestBody @Valid RegisterInput request) {
-
         return authService.register(request.name(), request.email(),
                 request.password(), request.role());
-
     }
 
     @PostMapping("/login")

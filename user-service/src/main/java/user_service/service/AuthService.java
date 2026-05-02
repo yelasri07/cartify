@@ -8,8 +8,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import jakarta.ws.rs.BadRequestException;
 import lombok.RequiredArgsConstructor;
+import user_service.exception.BadRequestException;
 import user_service.model.Role;
 import user_service.model.User;
 import user_service.repository.UserRepository;
