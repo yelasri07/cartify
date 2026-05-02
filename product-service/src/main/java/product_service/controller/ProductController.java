@@ -1,6 +1,7 @@
 package product_service.controller;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,8 +25,8 @@ public class ProductController {
 
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
-    public ProductOutput post(@RequestBody @Valid ProductInput productDate) {
-        return this.productService.createProduct(productDate);
+    public ProductOutput post(@RequestBody @Valid ProductInput productDate, @AuthenticationPrincipal String userId) {
+        return this.productService.createProduct(productDate, userId);
     }
 
     @GetMapping("/{id}")

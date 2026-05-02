@@ -16,13 +16,13 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
-    public ProductOutput createProduct(ProductInput productData) {
+    public ProductOutput createProduct(ProductInput productData, String userId) {
         Product product = Product.builder()
                 .name(productData.name())
                 .description(productData.description())
                 .price(productData.price())
                 .quantity(productData.quantity())
-                .userId(null)
+                .userId(userId)
                 .build();
 
         Product createdProduct = this.productRepository.insert(product);
