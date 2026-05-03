@@ -1,6 +1,14 @@
 spring:
   application:
     name: media-service
+  data:
+    mongodb:
+      uri: mongodb://${DB_USERNAME:buy01}:${DB_PASSWORD:buy01}@localhost:27019/${DB_NAME:buy01}?authSource=admin
+  # Limits individual files (e.g., 2MB)
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 11MB
 
 server:
   port: 8083

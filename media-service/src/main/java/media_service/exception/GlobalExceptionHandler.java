@@ -15,7 +15,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -179,4 +182,44 @@ public class GlobalExceptionHandler {
 
                 return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
         }
+
+        @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+        public ResponseEntity<ErrorResponse> MethodArgumentTypeMismatchException(
+                        MethodArgumentTypeMismatchException ex,
+                        WebRequest request) {
+
+                log.error("Unhandled exception: {}", ex.getMessage());
+
+                ErrorResponse error = ErrorResponse.builder()
+                                .timestamp(Instant.now())
+                                .status(HttpStatus.BAD_REQUEST.value())
+                                .error("Bad Request")
+                                .message(ex.getMessage())
+                                .path(request.getDescription(false).replace("uri=", ""))
+                                .build();
+
+                return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+        }
+
+        @ExceptionHandler(MaxUploadSizeExceededException.class)
+        public ResponseEntity<ErrorResponse> MaxUploadSizeExceededException(
+                        MaxUploadSizeExceededException ex,
+                        WebRequest request) {
+
+                log.error("Unhandled exception: {}", ex.getMessage());
+
+                ErrorResponse error = ErrorResponse.builder()
+                                .timestamp(Instant.now())
+                                .status(HttpStatus.BAD_REQUEST.value())
+                                .error("Bad Request")
+                                .message("File size exceeds 2MB limit")
+                                .path(request.getDescription(false).replace("uri=", ""))
+                                .build();
+
+                return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+        }
+
+
+        // MaxUploadSizeExceededException
+
 }
