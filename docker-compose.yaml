@@ -1,4 +1,13 @@
 services:
+  kafka:
+    image: apache/kafka
+    container_name: kafka
+    user: root
+    ports:
+      - "9092:9092"
+    volumes:
+      - kafka-data:/opt/kafka/logs
+      
   discovery-service:
     build: ./discovery-service
     container_name: discovery-service
@@ -96,3 +105,4 @@ volumes:
   user_mongodb_data:
   product_mongodb_data:
   media_mongodb_data:
+  kafka-data:
