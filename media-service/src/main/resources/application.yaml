@@ -9,6 +9,10 @@ spring:
     multipart:
       max-file-size: 2MB
       max-request-size: 11MB
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: mediaGroup
 
 server:
   port: 8083
