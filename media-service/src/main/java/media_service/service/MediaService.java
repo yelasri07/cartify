@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.kafka.common.protocol.types.Field.Str;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,6 +24,7 @@ import media_service.model.Target;
 import media_service.model.dto.MediaDTO.MediaInput;
 import media_service.repository.MediaRepository;
 import media_service.restApi.ProductClient;
+import media_service.restApi.UserClient;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +32,7 @@ public class MediaService {
 
     private final MediaRepository mediaRepository;
     private final ProductClient productClient;
+    private final UserClient userClient;
     private String product_dir = "upload-dir/products";
     private String user_dir = "upload-dir/avatars";
 
@@ -57,18 +60,21 @@ public class MediaService {
         Map<String, Object> response = new HashMap<>();
         List<String> message = new ArrayList<>();
         for (MultipartFile file : mediaInput.files()) {
-            message.add(this.saveFile(mediaInput, location, file));
+            String filePath = this.saveFile(mediaInput, location, file);
+            if (mediaInput.target() == Target.PRODUCT) {
+                Media media = Media.builder()
+                        .productId(mediaInput.targetId())
+                        .imagePath(filePath)
+                        .build();
+                mediaRepository.save(media);
+            }
+            message.add(filePath);
         }
 
-        if (mediaInput.target() == Target.PRODUCT) {
-            Media media = Media.builder()
-                    .productId(mediaInput.targetId())
-                    .imagePath(location + "/" + mediaInput.targetId())
-                    .build();
-            mediaRepository.save(media);
-        }else if (mediaInput.target() == Target.USER) {
-            AvatarInput avatarInput = new AvatarInput(userId, location + "/" + userId);
-            
+        if (mediaInput.target() == Target.USER) {
+            AvatarInput avatarInput = new AvatarInput(userId, message.get(0));
+            Map<String, Object> res = userClient.updateAvatar(avatarInput);
+            System.out.println(res);
         }
         response.put("files", message);
         return response;
