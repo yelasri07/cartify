@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
 import media_service.dto.ProductDTO.ProductInput;
+import media_service.dto.UserDTO.AvatarInput;
 import media_service.exception.BadRequestException;
 import media_service.model.Media;
 import media_service.model.Target;
@@ -64,6 +65,9 @@ public class MediaService {
                     .imagePath(location + "/" + mediaInput.targetId())
                     .build();
             mediaRepository.save(media);
+        }else if (mediaInput.target() == Target.USER) {
+            AvatarInput avatarInput = new AvatarInput(userId, location + "/" + userId);
+            
         }
         response.put("files", message);
         return response;
