@@ -50,6 +50,7 @@ public class MediaService {
 
         if (mediaInput.target() == Target.PRODUCT) {
             ProductInput product = productClient.getProduct(mediaInput.targetId());
+            System.out.println(product);
         }
 
         String location = mediaInput.target() == Target.PRODUCT ? product_dir : user_dir;
