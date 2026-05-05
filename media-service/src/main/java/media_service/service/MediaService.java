@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -65,7 +66,7 @@ public class MediaService {
                     extension = fileName.substring(fileName.lastIndexOf("."));
                 }
                 fileName = mediaInput.target() == Target.PRODUCT
-                        ? mediaInput.targetId() + "-" + file.getOriginalFilename()
+                        ? UUID.randomUUID().toString() + extension
                         : mediaInput.targetId() + extension;
 
                 Path filePath = uploadPath.resolve(fileName);
@@ -73,7 +74,7 @@ public class MediaService {
                     byte[] bytes = file.getBytes();
                     fos.write(bytes);
                 }
-                message.add("File uploaded: " + filePath.getFileName());
+                message.add("/media/images/" + filePath);
 
             } catch (IOException | IllegalStateException e) {
                 throw new InternalError("Upload failed: " + e.getMessage());
@@ -87,7 +88,7 @@ public class MediaService {
                     .build();
             mediaRepository.save(media);
         }
-        response.put("message", message);
+        response.put("files", message);
         return response;
 
     }
