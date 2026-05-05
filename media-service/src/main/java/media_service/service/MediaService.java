@@ -9,27 +9,30 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
+import media_service.dto.ProductDTO.ProductInput;
 import media_service.exception.BadRequestException;
 import media_service.model.Media;
 import media_service.model.Target;
 import media_service.model.dto.MediaDTO.MediaInput;
 import media_service.repository.MediaRepository;
+import media_service.restApi.ProductClient;
 
 @Service
 @RequiredArgsConstructor
 public class MediaService {
 
     private final MediaRepository mediaRepository;
+    private final ProductClient productClient;
     private String product_dir = "upload-dir/products";
     private String user_dir = "upload-dir/avatars";
 
-    public Map<String, Object> uploadMedia(MediaInput mediaInput) {
-
+    public Map<String, Object> uploadMedia(MediaInput mediaInput, String userId) {
         if (mediaInput.files() == null || mediaInput.files().length == 0) {
             throw new BadRequestException("No files uploaded");
         }
@@ -44,36 +47,15 @@ public class MediaService {
             throw new BadRequestException("Products accept maximum 5 media");
         }
 
+        if (mediaInput.target() == Target.PRODUCT) {
+            ProductInput product = productClient.getProduct(mediaInput.targetId());
+        }
+
         String location = mediaInput.target() == Target.PRODUCT ? product_dir : user_dir;
         Map<String, Object> response = new HashMap<>();
         List<String> message = new ArrayList<>();
         for (MultipartFile file : mediaInput.files()) {
-            try {
-                Path uploadPath = Paths.get(location);
-                if (!Files.exists(uploadPath)) {
-                    Files.createDirectories(uploadPath);
-                }
-                // get media extension
-                String fileName = file.getOriginalFilename();
-                String extension = "";
-
-                if (fileName != null && fileName.contains(".")) {
-                    extension = fileName.substring(fileName.lastIndexOf("."));
-                }
-                fileName = mediaInput.target() == Target.PRODUCT
-                        ? mediaInput.targetId() + "-" + file.getOriginalFilename()
-                        : mediaInput.targetId() + extension;
-
-                Path filePath = uploadPath.resolve(fileName);
-                try (FileOutputStream fos = new FileOutputStream(filePath.toString())) {
-                    byte[] bytes = file.getBytes();
-                    fos.write(bytes);
-                }
-                message.add("File uploaded: " + filePath.getFileName());
-
-            } catch (IOException | IllegalStateException e) {
-                throw new InternalError("Upload failed: " + e.getMessage());
-            }
+            message.add(this.saveFile(mediaInput, location, file));
         }
 
         if (mediaInput.target() == Target.PRODUCT) {
@@ -83,9 +65,39 @@ public class MediaService {
                     .build();
             mediaRepository.save(media);
         }
-        response.put("message", message);
+        response.put("files", message);
         return response;
 
+    }
+
+    private String saveFile(MediaInput mediaInput, String location, MultipartFile file) {
+        try {
+            Path uploadPath = Paths.get(location);
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+            // get media extension
+            String fileName = file.getOriginalFilename();
+            String extension = "";
+
+            if (fileName != null && fileName.contains(".")) {
+                extension = fileName.substring(fileName.lastIndexOf("."));
+            }
+            fileName = mediaInput.target() == Target.PRODUCT
+                    ? UUID.randomUUID().toString() + extension
+                    : mediaInput.targetId() + extension;
+
+            Path filePath = uploadPath.resolve(fileName);
+            try (FileOutputStream fos = new FileOutputStream(filePath.toString())) {
+                byte[] bytes = file.getBytes();
+                fos.write(bytes);
+            }
+
+            return "/media/images/" + filePath;
+
+        } catch (IOException | IllegalStateException e) {
+            throw new InternalError("Upload failed: " + e.getMessage());
+        }
     }
 
 }

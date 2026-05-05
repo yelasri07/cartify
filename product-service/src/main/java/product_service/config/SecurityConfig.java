@@ -26,6 +26,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/products").hasRole("SELLER")
                         .requestMatchers(HttpMethod.PUT, "/products/**").hasRole("SELLER")
                         .requestMatchers(HttpMethod.DELETE, "/products/**").hasRole("SELLER")
+                        .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
                         .anyRequest().authenticated())   
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

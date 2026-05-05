@@ -27,6 +27,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/products").hasRole("SELLER")
                         .requestMatchers(HttpMethod.PUT, "/api/products/**").hasRole("SELLER")
                         .requestMatchers(HttpMethod.DELETE, "/api/products/**").hasRole("SELLER")
+                        .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(customAuthenticationEntryPoint)
