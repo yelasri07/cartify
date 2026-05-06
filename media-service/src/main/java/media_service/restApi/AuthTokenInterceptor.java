@@ -1,5 +1,4 @@
-package product_service.restApi;
-
+package media_service.restApi;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import jakarta.servlet.http.HttpServletRequest;
