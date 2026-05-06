@@ -32,7 +32,7 @@ public class ProductService {
                 .build();
 
         Product createdProduct = this.productRepository.insert(product);
-        return ProductMapper.toProductOutputDto(createdProduct);
+        return ProductMapper.toProductOutputDto(createdProduct, null);
     }
 
     public ProductOutput getProduct(String productId) {
@@ -40,9 +40,7 @@ public class ProductService {
                 .orElseThrow(() -> new NotFoundException("Whoops! product not found"));
 
         List<String> productFiles = this.mediaClient.getProductMedia(product.getId());
-
-        System.out.println(productFiles);
-        return ProductMapper.toProductOutputDto(product);
+        return ProductMapper.toProductOutputDto(product, productFiles);
     }
 
     public ProductOutput updateProduct(String productId, ProductInput productData, String userId) {
@@ -60,7 +58,7 @@ public class ProductService {
 
         this.productRepository.save(product);
 
-        return ProductMapper.toProductOutputDto(product);
+        return ProductMapper.toProductOutputDto(product, null);
     }
 
     public Map<String, String> deleteProduct(String productId, String userId) {
@@ -74,9 +72,8 @@ public class ProductService {
         this.productRepository.delete(product);
 
         return Map.of(
-            "productId", product.getId(),
-            "message", "Product deleted successfully!"
-        );
+                "productId", product.getId(),
+                "message", "Product deleted successfully!");
     }
 
 }
