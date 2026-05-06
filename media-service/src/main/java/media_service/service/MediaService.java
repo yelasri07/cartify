@@ -1,6 +1,5 @@
 package media_service.service;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,13 +12,11 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.security.access.AccessDeniedException;
-import org.apache.kafka.common.protocol.types.Field.Str;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
 import media_service.dto.ProductDTO.ProductInput;
-import media_service.dto.UserDTO.AvatarInput;
 import media_service.exception.BadRequestException;
 import media_service.model.Media;
 import media_service.model.Target;
@@ -53,6 +50,10 @@ public class MediaService {
             throw new BadRequestException("Products accept maximum 5 media");
         }
 
+        if (mediaInput.target() == Target.USER && !mediaInput.targetId().equals(userId)) {
+            throw new AccessDeniedException("Cannot update other users avatar");
+        }
+
         if (mediaInput.target() == Target.PRODUCT) {
             ProductInput product = productClient.getProduct(mediaInput.targetId());
             if (!product.user_id().equals(userId)) {
@@ -69,7 +70,15 @@ public class MediaService {
         Map<String, Object> response = new HashMap<>();
         List<String> message = new ArrayList<>();
         for (MultipartFile file : mediaInput.files()) {
+
+            if (mediaInput.target() == Target.USER) {
+                String avatarUrl = "/media/images/avatars/" + userId + "/"
+                        + FileValidator.getExtensionFromMimeType(file);
+                userClient.updateAvatar(avatarUrl);
+            }
+
             String filePath = this.saveFile(mediaInput, location, file, subDir);
+
             if (mediaInput.target() == Target.PRODUCT) {
                 Media media = Media.builder()
                         .productId(mediaInput.targetId())
@@ -77,6 +86,7 @@ public class MediaService {
                         .build();
                 mediaRepository.save(media);
             }
+
             message.add(filePath);
         }
 
@@ -93,9 +103,11 @@ public class MediaService {
             }
             // get media extension
             String fileName = file.getOriginalFilename();
-            String extension = FileValidator.getExtensionFromMimeType(file);
+            String extension = "";
 
-
+            if (fileName != null && fileName.contains(".")) {
+                extension = fileName.substring(fileName.lastIndexOf("."));
+            }
             fileName = mediaInput.target() == Target.PRODUCT
                     ? UUID.randomUUID().toString() + extension
                     : mediaInput.targetId() + extension;

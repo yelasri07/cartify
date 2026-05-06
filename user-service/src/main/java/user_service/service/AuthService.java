@@ -37,7 +37,7 @@ public class AuthService {
                 .role(role)
                 .build();
 
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
 
         String jws = jwtService.generateToken(user);
 

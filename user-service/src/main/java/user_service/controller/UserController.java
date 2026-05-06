@@ -33,7 +33,8 @@ public class UserController {
     }
 
     @PutMapping("/me")
-    public Map<String, Object> updateAvatar(@RequestBody @Valid AvatarInput avatarInput) {
+    public Map<String, Object> updateAvatar(@RequestBody String avatarUrl, @AuthenticationPrincipal String id) {
+        AvatarInput avatarInput = new AvatarInput(id, avatarUrl);
         return userService.updateAvatar(avatarInput);
     }
 
