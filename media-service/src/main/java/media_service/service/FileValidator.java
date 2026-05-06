@@ -22,4 +22,26 @@ public class FileValidator {
             throw new RuntimeException("Could not read file for validation", e);
         }
     }
+
+    public static String getExtensionFromMimeType(MultipartFile file) {
+        try {
+            String detectedType = TIKA.detect(file.getInputStream()); // e.g., "image/jpeg"
+            
+            return switch (detectedType) {
+                case "image/jpeg" -> "jpg";
+                case "image/png" -> "png";
+                case "image/gif" -> "gif";
+                case "image/webp" -> "webp";
+                default -> {
+                    // Fallback: extract substring after "image/" if it's a standard format
+                    if (detectedType.startsWith("image/")) {
+                        yield detectedType.substring(6); 
+                    }
+                    throw new BadRequestException("Unsupported image format: " + detectedType);
+                }
+            };
+        } catch (IOException e) {
+            throw new RuntimeException("Could not read file to extract extension", e);
+        }
+    }
 }

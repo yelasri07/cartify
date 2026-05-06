@@ -1,5 +1,6 @@
 package media_service.service;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -79,11 +80,6 @@ public class MediaService {
             message.add(filePath);
         }
 
-        if (mediaInput.target() == Target.USER) {
-            AvatarInput avatarInput = new AvatarInput(userId, message.get(0));
-            Map<String, Object> res = userClient.updateAvatar(avatarInput);
-            System.out.println(res);
-        }
         response.put("files", message);
         return response;
 
@@ -97,11 +93,9 @@ public class MediaService {
             }
             // get media extension
             String fileName = file.getOriginalFilename();
-            String extension = "";
+            String extension = FileValidator.getExtensionFromMimeType(file);
 
-            if (fileName != null && fileName.contains(".")) {
-                extension = fileName.substring(fileName.lastIndexOf("."));
-            }
+
             fileName = mediaInput.target() == Target.PRODUCT
                     ? UUID.randomUUID().toString() + extension
                     : mediaInput.targetId() + extension;
