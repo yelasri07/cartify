@@ -30,7 +30,9 @@ export class RegisterComponent {
         console.log(res)
       },
       error: err => {
-        console.error(err)
+        if (err.validationErrors) {
+          
+        }
       }
     })
   }
