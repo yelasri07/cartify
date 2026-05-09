@@ -33,6 +33,8 @@ public class MediaService {
     private final MediaRepository mediaRepository;
     private final ProductClient productClient;
     private final UserClient userClient;
+    private final CloudinaryService cloudinaryService;
+
     private String product_dir = "products";
     private String user_dir = "avatars";
 
@@ -73,19 +75,17 @@ public class MediaService {
         }
 
         String subDir = mediaInput.target() == Target.PRODUCT ? product_dir : user_dir;
-        String location = "upload-dir/" + subDir;
         Map<String, Object> response = new HashMap<>();
         List<String> message = new ArrayList<>();
         for (MultipartFile file : mediaInput.files()) {
 
+            
+            // String filePath = this.saveFile(mediaInput, location, file, subDir);
+            String filePath = this.cloudinaryService.uploadFile(file, subDir);
+            
             if (mediaInput.target() == Target.USER) {
-                String avatarUrl = "/media/images/avatars/" + userId + "/"
-                        + FileValidator.getExtensionFromMimeType(file);
-                userClient.updateAvatar(avatarUrl);
+                userClient.updateAvatar(filePath);
             }
-
-            String filePath = this.saveFile(mediaInput, location, file, subDir);
-
             if (mediaInput.target() == Target.PRODUCT) {
                 Media media = Media.builder()
                         .productId(mediaInput.targetId())
@@ -100,36 +100,6 @@ public class MediaService {
         response.put("files", message);
         return response;
 
-    }
-
-    private String saveFile(MediaInput mediaInput, String location, MultipartFile file, String subDir) {
-        try {
-            Path uploadPath = Paths.get(location);
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-            // get media extension
-            String fileName = file.getOriginalFilename();
-            String extension = "";
-
-            if (fileName != null && fileName.contains(".")) {
-                extension = fileName.substring(fileName.lastIndexOf("."));
-            }
-            fileName = mediaInput.target() == Target.PRODUCT
-                    ? UUID.randomUUID().toString() + extension
-                    : mediaInput.targetId() + extension;
-
-            Path filePath = uploadPath.resolve(fileName);
-            try (FileOutputStream fos = new FileOutputStream(filePath.toString())) {
-                byte[] bytes = file.getBytes();
-                fos.write(bytes);
-            }
-
-            return "/media/images/" + subDir + "/" + filePath.getFileName();
-
-        } catch (IOException | IllegalStateException e) {
-            throw new InternalError("Upload failed: " + e.getMessage());
-        }
     }
 
     public List<String> getProductMedia(String productId) {
