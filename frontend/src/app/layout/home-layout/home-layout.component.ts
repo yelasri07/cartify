@@ -1,0 +1,13 @@
+import { Component } from '@angular/core';
+import { HeaderComponent } from "../components/header/header.component";
+import { FooterComponent } from "../components/footer/footer.component";
+
+@Component({
+  selector: 'app-home-layout',
+  imports: [HeaderComponent, FooterComponent],
+  templateUrl: './home-layout.component.html',
+  styleUrl: './home-layout.component.scss'
+})
+export class HomeLayoutComponent {
+
+}
