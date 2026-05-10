@@ -15,13 +15,15 @@ export class RegisterComponent {
   registerForm = new FormGroup({
     name: new FormControl(""),
     email: new FormControl(""),
-    password: new FormControl("")
+    password: new FormControl(""),
+    role: new FormControl("")
   });
 
   onSubmit() {
     if (!this.name.value?.trim()) this.name.setErrors({ required: "User name cannot be empty" })
     if (!this.email.value?.trim()) this.email.setErrors({ required: "User email cannot be empty" })
-    if (!this.password.value?.trim()) this.password.setErrors({ required: "User password cannot be empty" })
+    if (!this.password.value) this.password.setErrors({ required: "User password cannot be empty" })
+    if (!this.role.value?.trim()) this.role.setErrors({ required: "User role cannot be empty" })
 
     if (this.registerForm.invalid) return;
 
@@ -30,11 +32,13 @@ export class RegisterComponent {
         console.log(res)
       },
       error: err => {
-        console.log(err)
-        if (err.error?.validationErrors) {
-          console.log(err.error?.validationErrors)
+        let fieldErrors = err.error?.validationErrors
+        if (fieldErrors) {
+          this.registerForm.setErrors(fieldErrors)
+          return;
         }
 
+        throw err
       }
     })
   }
@@ -49,5 +53,9 @@ export class RegisterComponent {
 
   get password() {
     return this.registerForm.controls.password
+  }
+
+  get role() {
+    return this.registerForm.controls.role
   }
 }

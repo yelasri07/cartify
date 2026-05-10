@@ -11,7 +11,9 @@ export class GlobalErrorHandlerService implements ErrorHandler {
   handleError(error: any): void {
     let message = 'Something went wrong';
 
-    if (error?.message) {
+    if (error?.error?.message) {
+      message = error.error.message
+    } else if (error?.message) {
       message = error.message;
     }
 
