@@ -1,27 +1,22 @@
 package media_service.service;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
-import media_service.dto.ProductDTO.ProductInput;
 import media_service.exception.BadRequestException;
 import media_service.model.Media;
 import media_service.model.Target;
 import media_service.model.dto.MediaDTO.MediaInput;
 import media_service.model.dto.MediaDTO.MediaPathOutput;
+import media_service.model.dto.ProductDTO.ProductInput;
 import media_service.repository.MediaRepository;
 import media_service.restApi.ProductClient;
 import media_service.restApi.UserClient;
@@ -79,10 +74,9 @@ public class MediaService {
         List<String> message = new ArrayList<>();
         for (MultipartFile file : mediaInput.files()) {
 
-            
             // String filePath = this.saveFile(mediaInput, location, file, subDir);
             String filePath = this.cloudinaryService.uploadFile(file, subDir);
-            
+
             if (mediaInput.target() == Target.USER) {
                 userClient.updateAvatar(filePath);
             }
@@ -105,6 +99,14 @@ public class MediaService {
     public List<String> getProductMedia(String productId) {
         List<MediaPathOutput> media = this.mediaRepository.findImagesPathByProductId(productId);
         return media.stream().map((ele) -> ele.imagePath()).toList();
+    }
+
+    public Map<String, List<String>> getMediaProducts(List<String> productIds) {
+        List<Media> medias = mediaRepository.findByProductIdIn(productIds);
+
+        return medias.stream()
+                .collect(Collectors.groupingBy(Media::getProductId,
+                        Collectors.mapping(Media::getImagePath, Collectors.toList())));
     }
 
 }

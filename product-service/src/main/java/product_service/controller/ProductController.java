@@ -1,5 +1,6 @@
 package product_service.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
@@ -35,10 +36,11 @@ public class ProductController {
     }
 
     @GetMapping
-    public void getAll(
+    public List<ProductOutput> getAll(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {;
-        this.productService.getProducts(page, size);
+            @RequestParam(defaultValue = "10") int size) {
+        ;
+        return this.productService.getProducts(page, size);
     }
 
     @GetMapping("/{id}")

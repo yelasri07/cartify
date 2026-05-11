@@ -1,4 +1,4 @@
-package media_service.dto;
+package media_service.model.dto;
 
 public class ProductDTO {
 

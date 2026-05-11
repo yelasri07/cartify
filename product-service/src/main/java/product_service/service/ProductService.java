@@ -38,14 +38,22 @@ public class ProductService {
         return ProductMapper.toProductOutputDto(createdProduct, null);
     }
 
-    public void getProducts(int page, int size) {
+    public List<ProductOutput> getProducts(int page, int size) {
+        if (size > 100) {
+            size = 100;
+        }
+
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "id");
-        List<ProductOutput> products = this.productRepository.findAll(pageable)
-                .getContent().stream().map(product -> ProductMapper.toProductOutputDto(product, null)).toList();
+        List<Product> entities = this.productRepository.findAll(pageable).getContent();
 
-        List<String> productIds = products.stream().map(product -> product.id()).toList();
+        List<String> productIds = entities.stream().map(product -> product.getId()).toList();
 
-        
+        Map<String, List<String>> mediaProducts = this.mediaClient.getMediaProducts(productIds);
+
+        List<ProductOutput> products = entities.stream().map(product -> ProductMapper.toProductOutputDto(product,
+                mediaProducts.get(product.getId()))).toList();
+
+        return products;
     }
 
     public ProductOutput getProduct(String productId) {

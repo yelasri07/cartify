@@ -16,4 +16,6 @@ public interface MediaRepository extends MongoRepository<Media, String> {
 
     @Query(value = "{ 'product_id': ?0 }", fields = "{'image_path': 1, '_id': 0}")
     List<MediaPathOutput> findImagesPathByProductId(String productId);
+
+    List<Media> findByProductIdIn(List<String> productIds);
 }
