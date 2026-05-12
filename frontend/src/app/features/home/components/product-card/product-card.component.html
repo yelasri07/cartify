@@ -1,0 +1,49 @@
+<div class="max-w-sm rounded-xl overflow-hidden shadow-lg border border-secondary bg-primary">
+  <!-- Product Image Placeholder -->
+  <div class="h-48 bg-secondary flex items-center justify-center">
+    <!-- <svg class="w-12 h-12 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+    </svg> -->
+    <img class="w-full h-full object-cover" src="https://learn.zone01oujda.ma/api/content/root/01-edu_module/content/buy-01/Database-Design.png" alt="">
+  </div>
+
+  <div class="p-5 flex flex-col gap-3">
+    <!-- Header: Name & Price -->
+    <div class="flex justify-between items-start">
+      <h2 class="text-xl font-bold text-dark leading-tight">
+        Product Name
+      </h2>
+      <span class="text-lg font-semibold text-accent">
+        $99.99
+      </span>
+    </div>
+
+    <!-- Description with Truncation (3 dots) -->
+    <p class="text-accent text-sm line-clamp-2">
+      This is a long description that will automatically show three dots after the second line of text, ensuring the card height remains consistent across your product grid.
+    </p>
+
+    <hr class="border-secondary my-1" />
+
+    <!-- Metadata Footer -->
+    <div class="flex flex-row flex-wrap items-center gap-2 text-xs font-medium">
+      <!-- Quantity -->
+      <span class="bg-secondary text-dark px-2.5 py-0.5 rounded-full">
+        Qty: 12
+      </span>
+
+      <!-- Owner -->
+      <div class="flex items-center text-accent ml-auto">
+        <span class="mr-1">Owner:</span>
+        <span class="text-dark font-bold truncate max-w-[100px]">
+          User_Name
+        </span>
+      </div>
+    </div>
+
+    <!-- Action Button -->
+    <button class="mt-2 w-full bg-dark text-primary py-2 rounded-lg font-medium hover:opacity-90 transition-opacity">
+      View Details
+    </button>
+  </div>
+</div>

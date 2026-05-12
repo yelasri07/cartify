@@ -13,6 +13,6 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./layout/home-layout/home-layout.component').then((m) => m.HomeLayoutComponent),
     loadChildren: () =>
-      import('./features/auth/auth.routes').then((m) => m.routes),
+      import('./features/home/home.routes').then((m) => m.routes),
   },
 ];
