@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import user_service.exception.NotFoundException;
 import user_service.model.DTO.UserDTO.AvatarInput;
 import user_service.model.DTO.UserDTO.UserOutput;
 import user_service.model.User;
@@ -20,7 +21,8 @@ public class UserService {
     private final UserRepository userRepository;
 
     public Map<String, Object> getUser(String id) {
-        User user = userRepository.findById(id).get();
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Whoops! user not found."));
 
         Map<String, Object> response = new HashMap<>();
         response.put("user_details", UserToUserOutput(user));

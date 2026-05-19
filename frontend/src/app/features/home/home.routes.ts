@@ -9,8 +9,11 @@ export const routes: Routes = [
         redirectTo: "feed"
     },
     {
+        path: 'profile/:id',
+        loadComponent: () => import("../profile/profile.component").then(m => m.ProfileComponent)
+    },
+    {
         path: "feed",
         component: FeedComponent
-    },
-
+    }
 ]

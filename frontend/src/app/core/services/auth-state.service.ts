@@ -12,7 +12,7 @@ import { jwtDecode } from 'jwt-decode';
 export class AuthStateService {
   private http = inject(HttpClient)
   private storage = inject(StorageService)
-  
+
   private _currentUser = signal<User | null>(null);
   readonly currentUser = computed(() => this._currentUser());
   readonly isAuthenticated = computed(() => !!this._currentUser());
@@ -46,7 +46,7 @@ export class AuthStateService {
   }
 
   register(userData: any) {
-    return this.http.post<{token: string}>(API.REGISTER, userData).pipe(
+    return this.http.post<{ token: string }>(API.REGISTER, userData).pipe(
       tap(res => {
         this.storage.setToken(res.token);
         this.setUserFromToken(res.token);
@@ -55,7 +55,7 @@ export class AuthStateService {
   }
 
   login(userData: any) {
-    return this.http.post<{token: string}>(API.LOGIN, userData).pipe(
+    return this.http.post<{ token: string }>(API.LOGIN, userData).pipe(
       tap(res => {
         this.storage.setToken(res.token);
         this.setUserFromToken(res.token);
@@ -70,5 +70,9 @@ export class AuthStateService {
 
   getCurrentUser() {
     return this._currentUser()
+  }
+
+  fetchUser(id: string) {
+    return this.http.get<User>(`${API.PROFILE}/${id}`)
   }
 }
