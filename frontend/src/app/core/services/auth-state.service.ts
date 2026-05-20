@@ -73,6 +73,6 @@ export class AuthStateService {
   }
 
   fetchUser(id: string) {
-    return this.http.get<User>(`${API.PROFILE}/${id}`)
+    return this.http.get<{ user_details: User }>(`${API.PROFILE}/${id}`)
   }
 }

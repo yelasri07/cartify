@@ -14,7 +14,6 @@ export class ProfileComponent implements OnInit {
   private authStateService = inject(AuthStateService)
 
   userProfile = signal<User | null>(null);
-
   profileError = signal("");
 
   ngOnInit(): void {
@@ -28,12 +27,18 @@ export class ProfileComponent implements OnInit {
 
       this.authStateService.fetchUser(userId).subscribe({
         next: res => {
-          this.userProfile.set(res)
+          this.profileError.set("")
+          this.userProfile.set(res.user_details)
           console.log(this.userProfile())
         },
 
         error: err => {
-          console.error(err)
+          if (err.status === 404) {
+            this.profileError.set(err.error.message)
+            return
+          }
+
+          throw err
         }
       })
     })
