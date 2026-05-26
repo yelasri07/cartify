@@ -19,8 +19,8 @@ public class ProductDTO {
 
             @NotBlank(message = "Product name cannot be empty") @Size(min = 3, max = 100, message = "Product name must be between 3 and 100 characters") String name,
             @NotBlank(message = "Product description cannot be empty") @Size(min = 5, max = 255, message = "Description must be between 5 and 255 characters") String description,
-            @NotNull(message = "Product price cannot be null") @DecimalMin(value = "0.0", message = "Price must be greater than 0") @Digits(integer = 10, fraction = 2, message = "Price must be logic number and have max 2 decimal places") Double price,
-            @NotNull(message = "Product quantity cannot be null") @PositiveOrZero(message = "Quantity must be 0 or more") Integer quantity
+            @NotNull(message = "Product price cannot be empty") @DecimalMin(value = "0.0", message = "Price must be greater than 0") @Digits(integer = 10, fraction = 2, message = "Price must be logic number and have max 2 decimal places") Double price,
+            @NotNull(message = "Product quantity cannot be empty") @PositiveOrZero(message = "Quantity must be 0 or more") Integer quantity
 
     ) {
 

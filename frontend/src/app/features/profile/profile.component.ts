@@ -18,7 +18,7 @@ export class ProfileComponent implements OnInit {
 
   userProfile = signal<User | null>(null);
   profileError = signal("");
-  isCreateProductVisible = signal(true)
+  isCreateProductVisible = signal(false)
 
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe(params => {
