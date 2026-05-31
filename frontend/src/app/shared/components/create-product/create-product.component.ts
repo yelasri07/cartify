@@ -128,7 +128,6 @@ export class CreateProductComponent implements OnInit, OnDestroy {
 
     const MAX_SIZE = 2 * 1024 * 1024;
     if (file.size > MAX_SIZE) {
-      ipt.value = ''
       this.popupService.showError("Image size must not exceed 2MB.")
       return;
     }

@@ -47,7 +47,7 @@ public class UserService {
                 .name(user.getName())
                 .email(user.getEmail())
                 .role(user.getRole().name())
-                .avatarUrl(user.getAvatarUrl())
+                .avatar(user.getAvatarUrl())
                 .build();
     }
 
@@ -57,7 +57,7 @@ public class UserService {
         return users.stream()
                 .collect(Collectors.toMap(User::getId, user -> UserOutput.builder()
                         .name(user.getName())
-                        .avatarUrl(user.getAvatarUrl()).build()));
+                        .avatar(user.getAvatarUrl()).build()));
     }
 
 }
