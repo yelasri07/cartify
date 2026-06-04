@@ -29,7 +29,7 @@
             <button (click)="logout()" class="text-[10px] uppercase tracking-wider text-accent hover:text-red-500 cursor-pointer transition-colors">Logout</button>
           </div>
           <div [routerLink]="['/profile', user()?.id]" class="cursor-pointer h-10 w-10 overflow-hidden rounded-full border-2 border-secondary shadow-sm transition-transform group-hover:scale-105">
-            <img [src]="user()?.avatar" [alt]="user()?.name" class="h-full w-full object-cover">
+            <img [src]="user()?.avatar || `https://ui-avatars.com/api/?name=${user()?.name}&background=random`" [alt]="user()?.name" class="h-full w-full object-cover">
           </div>
         </div>
       } @else {

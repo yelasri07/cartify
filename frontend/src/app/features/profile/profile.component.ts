@@ -36,7 +36,7 @@ export class ProfileComponent implements OnInit {
         return
       }
 
-      this.authStateService.fetchUser(userId).subscribe({
+      this.authStateService.fetchUserProfile(userId).subscribe({
         next: res => {
           this.profileError.set("")
           this.userProfile.set(res.user_details)

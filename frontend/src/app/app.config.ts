@@ -6,6 +6,7 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { GlobalErrorHandlerService } from './core/services/global-error-handler.service';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { DialogService } from './core/services/dialog.service';
+import { AuthStateService } from './core/services/auth-state.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [provideZoneChangeDetection({ eventCoalescing: true }),
@@ -16,6 +17,8 @@ export const appConfig: ApplicationConfig = {
   },
   provideAppInitializer(() => {
     inject(DialogService)
+    const authStateService = inject(AuthStateService)
+    authStateService.fetchCurrentUser().subscribe()
   })
   ]
 };

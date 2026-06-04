@@ -24,11 +24,6 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping
-    public String getMethodName() {
-        return "Hello users!";
-    }
-
     @GetMapping("/me")
     public Map<String, Object> getProfile(@AuthenticationPrincipal String id) {
         return userService.getUser(id);

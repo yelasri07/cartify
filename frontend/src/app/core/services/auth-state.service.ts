@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal, computed } from '@angular/core';
 import { API } from '../config/api';
 import { User } from '../interfaces/user.interface';
-import { tap } from 'rxjs';
+import { catchError, of, tap } from 'rxjs';
 import { StorageService } from './storage.service';
 import { jwtDecode } from 'jwt-decode';
 
@@ -17,18 +17,7 @@ export class AuthStateService {
   readonly currentUser = computed(() => this._currentUser());
   readonly isAuthenticated = computed(() => !!this._currentUser());
 
-  constructor() {
-    this.restoreSession();
-  }
-
-  private restoreSession() {
-    const token = this.storage.getToken();
-    if (token) {
-      this.setUserFromToken(token);
-    }
-  }
-
-  private setUserFromToken(token: string) {
+  setCurrentUser(token: string) {
     try {
       const decoded: any = jwtDecode(token);
       this._currentUser.set({
@@ -45,20 +34,32 @@ export class AuthStateService {
     }
   }
 
+  fetchCurrentUser() {
+    return this.http.get<{ user_details: User }>(API.ME).pipe(
+      tap(respone => {
+        this._currentUser.set(respone.user_details)
+      }),
+      catchError(() => {
+        this._currentUser.set(null);
+        return of(null);
+      })
+    );
+  }
+
   register(userData: any) {
     return this.http.post<{ token: string }>(API.REGISTER, userData).pipe(
       tap(res => {
         this.storage.setToken(res.token);
-        this.setUserFromToken(res.token);
+        this.setCurrentUser(res.token);
       })
-    )
+    ) 
   }
 
   login(userData: any) {
     return this.http.post<{ token: string }>(API.LOGIN, userData).pipe(
       tap(res => {
         this.storage.setToken(res.token);
-        this.setUserFromToken(res.token);
+        this.setCurrentUser(res.token);
       })
     )
   }
@@ -68,7 +69,7 @@ export class AuthStateService {
     this._currentUser.set(null);
   }
 
-  fetchUser(id: string) {
+  fetchUserProfile(id: string) {
     return this.http.get<{ user_details: User }>(`${API.PROFILE}/${id}`)
   }
 }
