@@ -1,23 +1,15 @@
-<header class="sticky top-0 z-50 w-full border-b border-secondary/40 bg-primary backdrop-blur-md">
-  <div class="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 lg:px-10">
+<header class="sticky top-0 z-50 w-full shadow-lg bg-primary backdrop-blur-md">
+  <div class="flex items-center justify-between py-2 px-4 sm:py-6 sm:px-12">
 
     <!-- Logo -->
-    <a routerLink="/" class="group flex items-center gap-3">
-      <div
-        class="flex h-11 w-11 items-center justify-center rounded-xl bg-dark text-primary transition-transform group-hover:scale-105">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
-          class="h-6 w-6">
-          <path stroke-linecap="round" stroke-linejoin="round"
-            d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-        </svg>
-      </div>
-      <span class="text-2xl font-bold tracking-tight text-dark">Buy 01</span>
+    <a routerLink="/" class="group flex items-center gap-3 logo">
+      <span class="sm:text-4xl font-extrabold tracking-tight text-dark uppercase">Buy<span class="text-accent">01</span></span>
     </a>
 
     <!-- Navigation -->
     <nav class="hidden md:flex items-center gap-8">
-      <a routerLink="/feed" routerLinkActive="text-accent"
-        class="text-sm font-medium text-accent/80 transition-colors hover:text-accent">All Products</a>
+      <a routerLink="/feed" routerLinkActive="active"
+        class="text-md relative duration-500">home</a>
     </nav>
 
     <!-- Auth Actions -->
@@ -36,11 +28,10 @@
         </div>
       </div>
       } @else {
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-6">
         <a routerLink="/auth/login" class="text-sm font-medium text-accent hover:text-dark transition-colors">Login</a>
         <a routerLink="/auth/register"
-          class="rounded-lg bg-dark px-5 py-2.5 text-sm font-medium text-primary hover:bg-accent transition-all active:scale-95">Sign
-          Up</a>
+          class="rounded-sm bg-dark px-8 py-2.5 text-sm font-medium text-primary hover:bg-accent transition-all active:scale-95">Register</a>
       </div>
       }
     </div>
