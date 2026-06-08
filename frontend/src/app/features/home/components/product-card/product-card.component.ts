@@ -12,12 +12,12 @@ import { ProductOptionsComponent } from '../../../../shared/components/product-o
 import { AuthStateService } from '../../../../core/services/auth-state.service';
 import { CreateProductComponent } from '../../../../shared/components/create-product/create-product.component';
 import '@tailwindplus/elements';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { PopupService } from '../../../../core/services/popup.service';
 
 @Component({
   selector: 'app-product-card',
-  imports: [CurrencyPipe, ProductOptionsComponent, CreateProductComponent, RouterLink],
+  imports: [CurrencyPipe, ProductOptionsComponent, CreateProductComponent],
   templateUrl: './product-card.component.html',
   styleUrl: './product-card.component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

@@ -22,7 +22,7 @@ services:
       KAFKA_SHARE_COORDINATOR_STATE_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_SHARE_COORDINATOR_STATE_TOPIC_MIN_ISR: 1
       KAFKA_LOG_DIRS: "/tmp/kraft-combined-logs"
-      
+
     # volumes:
     #   - kafka-data:/var/lib/kafka/data # Map the DATA, not the LOGS
 
@@ -46,6 +46,7 @@ services:
         condition: service_healthy
     environment:
       - EUREKA_SERVER=http://discovery-service:8761/eureka
+      - SSL_PASSWORD=${SSL_PASSWORD}
     ports:
       - 8080:8080
 
@@ -96,6 +97,8 @@ services:
         condition: service_healthy
       user-db:
         condition: service_started
+      broker:
+        condition: service_started
     environment:
       - EUREKA_SERVER=http://discovery-service:8761/eureka
       - MONGO_URL=mongodb://buy01:buy01@user-db:27017/buy01?authSource=admin
@@ -107,6 +110,8 @@ services:
       discovery-service:
         condition: service_healthy
       product-db:
+        condition: service_started
+      broker:
         condition: service_started
     environment:
       - EUREKA_SERVER=http://discovery-service:8761/eureka
