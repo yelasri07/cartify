@@ -56,7 +56,7 @@
                 <label class="text-sm text-accent font-medium">Upload Media: <span
                         [ngClass]="{'max-media': media().length >= 5}"> {{ media().length }} / 5 </span></label>
 
-                <input accept="image/*" (change)="onMediaChange($event)" type="file"
+                <input accept=".jpg,.jpeg,.png,.gif,.webp,.bmp" (change)="onMediaChange($event)" type="file"
                     class="w-full text-sm text-accent file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-accent file:text-primary hover:file:bg-dark transition cursor-pointer" />
             </div>
 

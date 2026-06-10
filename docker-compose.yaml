@@ -89,6 +89,12 @@ services:
     volumes:
       - media_mongodb_data:/data/db
 
+  angular-app:
+    build:
+      context: ./frontend
+    ports:
+      - 8080:8080
+
   user-service:
     build: ./user-service
     container_name: user-service
