@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(name = "media-service")
 public interface MediaClient {
 
-    @GetMapping("/media/products/{id}")
+    @GetMapping("/api/media/products/{id}")
     public List<String> getProductMedia(@PathVariable("id") String productId);
 
-    @PostMapping("/media/products")
+    @PostMapping("/api/media/products")
     public Map<String, List<String>> getMediaProducts(@RequestBody List<String> productIds);
 
 }

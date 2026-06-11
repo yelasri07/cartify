@@ -28,13 +28,13 @@ public class SecurityConfig implements WebMvcConfigurer {
                                 .csrf(csrf -> csrf.disable())
                                 .authorizeHttpRequests(auth -> auth
                                                 .requestMatchers("/auth/**").permitAll()
-                                                .requestMatchers(HttpMethod.POST, "/api/products").hasRole("SELLER")
-                                                .requestMatchers(HttpMethod.PUT, "/api/products/**").hasRole("SELLER")
-                                                .requestMatchers(HttpMethod.DELETE, "/api/products/**")
+                                                .requestMatchers(HttpMethod.POST, "/products").hasRole("SELLER")
+                                                .requestMatchers(HttpMethod.PUT, "/products/**").hasRole("SELLER")
+                                                .requestMatchers(HttpMethod.DELETE, "/products/**")
                                                 .hasRole("SELLER")
                                                 .requestMatchers(HttpMethod.POST, "/media")
                                                 .hasRole("SELLER")
-                                                .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
+                                                .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
                                                 .anyRequest().authenticated())
                                 .exceptionHandling(ex -> ex
                                                 .authenticationEntryPoint(customAuthenticationEntryPoint)
@@ -48,7 +48,7 @@ public class SecurityConfig implements WebMvcConfigurer {
         @Override
         public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                                .allowedOrigins("https://localhost:4200")
+                                .allowedOrigins("http://localhost:4200")
                                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                                 .allowedHeaders("*")
                                 .allowCredentials(true);

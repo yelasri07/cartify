@@ -20,7 +20,7 @@ RUN --mount=type=cache,target=/root/.npm npm ci
 COPY . .
 
 # Build the Angular application
-RUN npm run build 
+RUN npm run build
 
 # =========================================
 # Stage 2: Prepare Nginx to Serve Static Files
@@ -38,8 +38,8 @@ COPY --chown=nginx:nginx --from=builder /app/dist/*/browser /usr/share/nginx/htm
 USER nginx
 
 # Expose port 8080 to allow HTTP traffic
-# Note: The default Nginx container now listens on port 8080 instead of 80 
-EXPOSE 8080
+# Note: The default Nginx container now listens on port 8080 instead of 80
+EXPOSE 4200
 
 # Start Nginx directly with custom config
 ENTRYPOINT ["nginx", "-c", "/etc/nginx/nginx.conf"]

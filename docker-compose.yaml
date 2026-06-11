@@ -93,7 +93,11 @@ services:
     build:
       context: ./frontend
     ports:
-      - 8080:8080
+      - 4200:4200
+    depends_on:
+      api-gateway:
+        condition: service_started
+      
 
   user-service:
     build: ./user-service

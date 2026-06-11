@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(name = "user-service")
 public interface UserClient {
     
-    @PutMapping("/users/me")
+    @PutMapping("/api/users/me")
     public Map<String, Object> updateAvatar(@RequestBody String avatarUrl);
 
 }

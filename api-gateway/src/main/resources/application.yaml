@@ -1,12 +1,16 @@
 server:
-  ssl:
-    enabled: true
-    key-store: classpath:keystore.p12
-    key-store-password: ${SSL_PASSWORD:changeit}
-    key-store-type: PKCS12
-    key-alias: buy01
-    protocol: TLS
-    enabled-protocols: TLSv1.3,TLSv1.2
+  servlet:
+    context-path: /api
+
+  # ssl:
+  #   enabled: true
+  #   key-store: classpath:keystore.p12
+  #   key-store-password: ${SSL_PASSWORD:changeit}
+  #   key-store-type: PKCS12
+  #   key-alias: buy01
+  #   protocol: TLS
+  #   enabled-protocols: TLSv1.3,TLSv1.2
+  
 
 spring:
 
@@ -24,7 +28,7 @@ spring:
             - id: product-service
               uri: lb://product-service
               predicates:
-                - Path=/api/products/**
+                - Path=/products/**
             - id: media-service
               uri: lb://media-service
               predicates:

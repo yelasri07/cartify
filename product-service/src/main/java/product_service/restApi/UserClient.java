@@ -12,7 +12,7 @@ import product_service.dto.UserDTO;
 @FeignClient(name = "user-service")
 public interface UserClient {
 
-    @PostMapping("/users/products")
+    @PostMapping("/api/users/products")
     public Map<String, UserDTO> getUserProducts(@RequestBody Set<String> userIds);
 
 }
