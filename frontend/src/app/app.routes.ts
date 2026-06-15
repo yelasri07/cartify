@@ -16,9 +16,5 @@ export const routes: Routes = [
       import('./layout/home-layout/home-layout.component').then((m) => m.HomeLayoutComponent),
     loadChildren: () =>
       import('./features/home/home.routes').then((m) => m.routes),
-  },
-  {
-    path: "**",
-    redirectTo: "/feed"
   }
 ];
