@@ -46,8 +46,8 @@ services:
         condition: service_healthy
     environment:
       - EUREKA_SERVER=http://discovery-service:8761/eureka
-    ports:
-      - 8080:8080
+    # ports:
+    #   - 8080:8080
 
   user-db:
     image: mongo
@@ -92,7 +92,7 @@ services:
     build:
       context: ./frontend
     ports:
-      - 4200:4200
+      - 4200:443
     depends_on:
       api-gateway:
         condition: service_started
