@@ -60,7 +60,7 @@ The system is decomposed into several specialized services, each handling a spec
 
 ### Prerequisites
 - Docker & Docker Compose
-- Java 17+ (for local builds)
+- Java 17 (for local builds)
 - Node.js & npm (for frontend)
 - Angular CLI (`npm install -g @angular/cli`)
 
@@ -73,7 +73,23 @@ DB_NAME=buy01
 CLOUDINARY_URL=your_cloudinary_url_here
 ```
 
-### 2. Build the Services
+### 2. SSL Certificate Setup
+To support end-to-end HTTPS, you must provide SSL certificates in the `frontend/` directory. Create or place the following files in `frontend/`:
+
+- `secureCertificate.crt`: Your SSL certificate.
+- `private.key`: The private key for your certificate.
+- `securePassphrase`: A file containing the passphrase for the private key (if applicable).
+
+Example command to generate self-signed certificates for local development:
+```bash
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+  -keyout frontend/private.key \
+  -out frontend/secureCertificate.crt
+# Create a dummy passphrase file if your key is not encrypted
+touch frontend/securePassphrase
+```
+
+### 3. Build the Services
 Use the provided build script to package all backend microservices:
 ```bash
 chmod +x build.sh
