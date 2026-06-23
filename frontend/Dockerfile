@@ -41,9 +41,7 @@ COPY --chown=nginx:nginx securePassphrase /etc/nginx
 # Use a built-in non-root user for security best practices
 USER nginx
 
-# Expose port 4200 to allow HTTP traffic
-# Note: The default Nginx container now listens on port 4200 instead of 80
-EXPOSE 4200
+EXPOSE 443
 
 # Start Nginx directly with custom config
 ENTRYPOINT ["nginx", "-c", "/etc/nginx/nginx.conf"]
