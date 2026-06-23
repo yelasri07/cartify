@@ -148,3 +148,4 @@ volumes:
   product_mongodb_data:
   media_mongodb_data:
   # kafka-data:
+
