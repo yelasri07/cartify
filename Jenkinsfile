@@ -13,6 +13,7 @@ pipeline {
                 echo 'Building..'
                 sh '''
                 java -version
+                cd user-service
                 ./mvnw -version
                 '''
                 // ./build.sh
