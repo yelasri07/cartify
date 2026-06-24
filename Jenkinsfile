@@ -9,22 +9,19 @@ pipeline {
     }
     stages {
         stage('Build') {
-            agent {
-                // This automatically spins up a Java 17 environment for this stage
-                dockerContainer { image 'eclipse-temurin:17-jdk' }
-            }
             steps {
                 echo 'Building..'
                 sh '''
+                apt-get update -q
+                apt-get install -y temurin-17-jdk
+                export JAVA_HOME=/usr/lib/jvm/temurin-17
+                export PATH=$JAVA_HOME/bin:$PATH
+                java -version
                 ./build.sh
                 '''
             }
         }
         stage('Test') {
-            agent {
-                // This automatically spins up a Java 17 environment for this stage
-                dockerContainer { image 'eclipse-temurin:17-jdk' }
-            }
             steps {
                 echo 'Testing..'
                 sh '''
