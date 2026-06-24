@@ -12,9 +12,10 @@ pipeline {
             steps {
                 echo 'Building..'
                 sh '''
-                java --version
-                // ./build.sh
+                java -version
+                ./mvnw -version
                 '''
+                // ./build.sh
             }
         }
         stage('Test') {
