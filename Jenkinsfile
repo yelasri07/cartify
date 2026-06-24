@@ -7,6 +7,9 @@ pipeline {
     triggers {
         pollSCM '* * * * *'
     }
+    tools {
+        jdk 'JDK17' // Matches the name you gave it in Global Tools
+    }
     stages {
         stage('Build') {
             steps {
