@@ -12,7 +12,8 @@ pipeline {
             steps {
                 echo 'Building..'
                 sh '''
-                ./build.sh
+                java --version
+                // ./build.sh
                 '''
             }
         }
