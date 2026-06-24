@@ -12,11 +12,6 @@ pipeline {
             steps {
                 echo 'Building..'
                 sh '''
-                apt-get update -q
-                apt-get install -y temurin-17-jdk
-                export JAVA_HOME=/usr/lib/jvm/temurin-17
-                export PATH=$JAVA_HOME/bin:$PATH
-                java -version
                 ./build.sh
                 '''
             }
