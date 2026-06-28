@@ -22,9 +22,9 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Testing..'
-                // sh '''
-                // ./test.sh
-                // '''
+                sh '''
+                ./test.sh
+                '''
             }
         }
         stage('Deliver') {
