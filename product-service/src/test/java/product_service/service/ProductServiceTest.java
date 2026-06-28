@@ -22,6 +22,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.security.access.AccessDeniedException;
 
 import product_service.dto.UserDTO;
 import product_service.dto.ProductDTO.ProductInput;
@@ -61,7 +62,7 @@ public class ProductServiceTest {
                 .price(productInput.price())
                 .quantity(productInput.quantity())
                 .status(ProductStatus.PENDING)
-                .userId("1")
+                .userId("user-123")
                 .id("a5SD45vsdf")
                 .build();
         userResponse = UserDTO.builder()
@@ -125,7 +126,8 @@ public class ProductServiceTest {
             when(userClient.getUserProducts(any()))
                     .thenReturn(Map.of("user-123", userResponse));
             when(mediaClient.getMediaProducts(any()))
-                    .thenReturn(Map.of("media-123", List.of("url1", "url2"), "media-456", List.of("url3", "url4")));
+                    .thenReturn(Map.of("media-123", List.of("url1", "url2"), "media-456",
+                            List.of("url3", "url4")));
 
             // Act
             List<ProductOutput> products = productService.getProducts(page, size, null);
@@ -151,7 +153,8 @@ public class ProductServiceTest {
             when(userClient.getUserProducts(any()))
                     .thenReturn(Map.of("user-123", userResponse));
             when(mediaClient.getMediaProducts(any()))
-                    .thenReturn(Map.of("media-123", List.of("url1", "url2"), "media-456", List.of("url3", "url4")));
+                    .thenReturn(Map.of("media-123", List.of("url1", "url2"), "media-456",
+                            List.of("url3", "url4")));
 
             // Act
             List<ProductOutput> products = productService.getProducts(page, size, userId);
@@ -199,4 +202,64 @@ public class ProductServiceTest {
 
     }
 
+    @Nested
+    @DisplayName("Update product unit tests")
+    class UpdateProductTests {
+
+        @Test
+        @DisplayName("Should update product successfully")
+        void shouldUpdateProductSuccessfully() {
+            // Arrange
+            final String productId = "product-123";
+            final String userId = "user-123";
+            when(productRepository.findById(productId))
+                    .thenReturn(Optional.of(productResponse));
+            when(productRepository.save(productResponse))
+                    .thenReturn(productResponse);
+
+            // Act
+            ProductOutput product = productService.updateProduct(productId, productInput, userId);
+
+            // Assert
+            assertNotNull(product);
+            assertEquals(productInput.name(), product.name());
+            verify(productRepository).findById(productId);
+            verify(productRepository).save(productResponse);
+        }
+
+        @Test
+        @DisplayName("Should throw not found exception when updated product not found")
+        void shouldThrowNotFoundExceptionWhenUpdatedProductNotFound() {
+            // Arrange
+            final String productId = "product-id";
+            when(productRepository.findById(productId))
+                    .thenReturn(Optional.empty());
+
+            // Act & Assert
+            NotFoundException exception = assertThrows(NotFoundException.class,
+                    () -> productService.updateProduct(productId, any(), "user-123"));
+
+            assertNotNull(exception);
+            assertEquals("Whoops! product not found", exception.getMessage());
+            verify(productRepository).findById(productId);
+        }
+
+        @Test
+        @DisplayName("Should throw access denied exception when not the product owner")
+        void ShouldThrowAccessDeniedExceptionWhenNotTheProductOwner() {
+            // Arrange
+            final String productId = "product-id";
+            final String userId = "user-456";
+            when(productRepository.findById(productId))
+                    .thenReturn(Optional.of(productResponse));
+
+            // Act & Assert
+            AccessDeniedException exception = assertThrows(AccessDeniedException.class,
+                    () -> productService.updateProduct(productId, productInput, userId));
+
+            assertNotNull(exception);
+            assertEquals("Cannot update products of others!", exception.getMessage());
+        }
+
+    }
 }
