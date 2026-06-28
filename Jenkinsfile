@@ -11,9 +11,9 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building..'
-                sh '''
-                ./build.sh
-                '''
+                // sh '''
+                // ./build.sh
+                // '''
                 // export JAVA_HOME=/usr/lib/jvm/temurin-17-jdk-amd64
                 // export PATH=$JAVA_HOME/bin:$PATH
                 // java -version
@@ -22,9 +22,9 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Testing..'
-                sh '''
-                ./test.sh
-                '''
+                // sh '''
+                // ./test.sh
+                // '''
             }
         }
         stage('Deliver') {

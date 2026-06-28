@@ -22,7 +22,7 @@ SERVICES=(
 # Loop through each service and build
 for SERVICE in "${SERVICES[@]}"; do
     if [ -d "$SERVICE" ]; then
-        echo -e "${BLUE}📦 Building Service:${NC} $SERVICE"
+        echo -e "${BLUE}📦 testing Service:${NC} $SERVICE"
         
         # Move into directory, build, and come back automatically
         (
