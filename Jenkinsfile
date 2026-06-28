@@ -33,12 +33,13 @@ pipeline {
                     file(credentialsId: 'buy01-env-file', variable: 'ENV_FILE')
                 ]) {
                     echo 'Deliver....'
-                    // sh '''
-                    // cp $ENV_FILE .env
-                    // docker compose down
-                    // docker compose up -d --build
-                    // rm -f .env
-                    // '''
+                    sh '''
+                    cp $ENV_FILE .env
+                    cat .env
+                    docker compose down
+                    docker compose up -d --build
+                    rm -f .env
+                    '''
                 }
             }
         }
