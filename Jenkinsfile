@@ -46,7 +46,7 @@ pipeline {
                             sh '''
                                 docker compose down
                                 docker compose up -d --build
-                                sleep 20
+                                sleep 60
 
                                 # 1. Check container states (works even with no exposed ports)
                                 FAILED=$(docker compose ps --format json | grep -E '"State":"exited"|"Health":"unhealthy"' || true)
