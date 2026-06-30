@@ -57,7 +57,7 @@ pipeline {
                                 fi
 
                                 # 2. Check discovery-service, the one service we know is exposed
-                                curl -f http://localhost:8761/actuator/health || exit 1
+                                curl -f http://discovery-service:8761/actuator/health || exit 1
 
                                 echo "Health check passed"
                             '''
