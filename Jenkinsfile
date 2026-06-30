@@ -30,15 +30,25 @@ pipeline {
         stage('Deliver') {
             steps {
                 withCredentials([
-                    file(credentialsId: 'buy01-env-file', variable: 'ENV_FILE')
+                    file(credentialsId: 'buy01-env-file', variable: 'ENV_FILE'),
+                    file(credentialsId: 'ssl-cert', variable: 'SSL_CERT'),
+                    file(credentialsId: 'ssl-key', variable: 'SSL_KEY'),
+                    file(credentialsId: 'ssl-passphrase', variable: 'SSL_PASSPHRASE')
                 ]) {
                     echo 'Deliver....'
                     sh '''
                     cp $ENV_FILE .env
-                    cat .env
+
+                    cp $SSL_CERT angular-app/secureCertificate.crt
+                    cp $SSL_KEY angular-app/private.key
+                    cp $SSL_PASSPHRASE angular-app/securePassphrase
+
                     docker compose down
                     docker compose up -d --build
                     rm -f .env
+                    rm -f angular-app/secureCertificate.crt
+                    rm -f angular-app/private.key
+                    rm -f angular-app/securePassphrase
                     '''
                 }
             }
