@@ -84,31 +84,21 @@ pipeline {
     post {
         success {
             script {
-                try {
-                    emailext(
-                    to: "adnane.elmir1@gmail.com",
-                    subject: "Build success: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                    body: "Status: success\nURL: ${env.BUILD_URL}\n\nmessage test",
-                    mimeType: 'text/plain'
-                    )
-                } catch (err) {
-                    mail(to: "adnane.elmir1@gmail.com", subject: "Build success", body: "test")
-                }
+                mail(
+                to: 'adnane.elmir1@gmail.com',
+                subject: "✅ SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: "Build passed.\nLogs: ${env.BUILD_URL}"
+            )
             }
         }
-        // failure {
-        //     mail to: 'adnane.elmir1@gmail.com'
-        //         subject: "❌ BUILD FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-        //         body: """
-        //             <h2>Build Failed</h2>
-        //             <p><b>Job:</b> ${env.JOB_NAME}</p>
-        //             <p><b>Build:</b> #${env.BUILD_NUMBER}</p>
-        //             <p><b>Commit:</b> ${env.GIT_COMMIT}</p>
-        //             <p><b>Branch:</b> ${env.GIT_BRANCH}</p>
-        //             <p><a href="${env.BUILD_URL}console">View Console Output</a></p>
-        //         """,
-        //         mimeType: 'text/html',
-
-    // }
+        failure {
+            script {
+                mail(
+                to: 'adnane.elmir1@gmail.com',
+                subject: "❌ FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: "Build failed.\nLogs: ${env.BUILD_URL}console"
+            )
+            }
+        }
     }
 }
