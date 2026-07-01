@@ -50,7 +50,7 @@ pipeline {
                             '''
                         } catch (err) {
                             if (!env.GIT_PREVIOUS_SUCCESSFUL_COMMIT) {
-                                error "Deploy failed and no previous successful commit exists to roll back to. Manual intervention required."
+                                error 'Deploy failed and no previous successful commit exists to roll back to. Manual intervention required.'
                             }
 
                             echo "Deploy failed — rolling back to ${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}"
@@ -83,12 +83,34 @@ pipeline {
 
     post {
         success {
-            echo 'Pipeline succeeded! Build, tests, and deployment all passed.'
-            // TODO: add email
+            emailext(
+            subject: "✅ BUILD SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+            body: """
+                <h2>Build Succeeded</h2>
+                <p><b>Job:</b> ${env.JOB_NAME}</p>
+                <p><b>Build:</b> #${env.BUILD_NUMBER}</p>
+                <p><b>Commit:</b> ${env.GIT_COMMIT}</p>
+                <p><b>Branch:</b> ${env.GIT_BRANCH}</p>
+                <p><a href="${env.BUILD_URL}">View Build Logs</a></p>
+            """,
+            mimeType: 'text/html',
+            to: 'adnane.elmir1@gmail.com'
+        )
         }
         failure {
-            echo 'Pipeline failed! Check logs above for build, test, or deployment errors.'
-            // TODO: add email
+            emailext(
+            subject: "❌ BUILD FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+            body: """
+                <h2>Build Failed</h2>
+                <p><b>Job:</b> ${env.JOB_NAME}</p>
+                <p><b>Build:</b> #${env.BUILD_NUMBER}</p>
+                <p><b>Commit:</b> ${env.GIT_COMMIT}</p>
+                <p><b>Branch:</b> ${env.GIT_BRANCH}</p>
+                <p><a href="${env.BUILD_URL}console">View Console Output</a></p>
+            """,
+            mimeType: 'text/html',
+            to: 'adnane.elmir1@gmail.com'
+        )
         }
     }
 }
