@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
 import { FeedComponent } from "./feed/feed.component";
-import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-home',
-  imports: [FeedComponent, RouterOutlet],
+  imports: [FeedComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })

@@ -9,7 +9,7 @@ export class GlobalErrorHandlerService implements ErrorHandler {
   private popupService = inject(PopupService)
 
   handleError(error: any): void {
-    console.error(error)
+    // console.error(error)
     let message = 'Something went wrong';
 
     if (error?.error?.message) {

@@ -55,8 +55,9 @@ public class ProductService {
 
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "id");
         List<Product> entities = userId == null
-                ? this.productRepository.findByStatus(ProductStatus.ACTIVE, pageable).getContent()
-                : this.productRepository.findByUserId(userId, pageable).getContent();
+                ? this.productRepository.findByStatus(ProductStatus.ACTIVE, pageable).getContent() // For home page
+                                                                                                   // products
+                : this.productRepository.findByUserId(userId, pageable).getContent(); // For profile page products
 
         // send one request to get users for each product
         Set<String> userIds = entities.stream().map(product -> product.getUserId()).collect(Collectors.toSet());
