@@ -20,7 +20,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Testing..'
-                // sh './test.sh'
+                sh './test.sh'
             }
         }
 
@@ -34,9 +34,9 @@ pipeline {
                 ]) {
                     echo 'Deliver....'
 
-                        // cp "$SSL_CERT" frontend/secureCertificate.crt
                     sh '''
                         cp "$ENV_FILE" .env
+                        cp "$SSL_CERT" frontend/secureCertificate.crt
                         cp "$SSL_KEY" frontend/private.key
                         cp "$SSL_PASSPHRASE" frontend/securePassphrase
                     '''
@@ -58,7 +58,6 @@ pipeline {
                                 docker compose down
                                 git checkout ${GIT_PREVIOUS_SUCCESSFUL_COMMIT}
 
-                                # Re-copy secrets since checkout may affect untracked files
                                 cp "$ENV_FILE" .env
                                 cp "$SSL_CERT" frontend/secureCertificate.crt
                                 cp "$SSL_KEY" frontend/private.key
