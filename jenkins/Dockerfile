@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y docker-ce-cli
 
 RUN apt install -y nodejs npm
 
-RUN npm install -g @angular/cli
+RUN npm install -g @angular/cli@20
 
 # Add jenkins user to the docker group
 RUN groupadd -f docker && usermod -aG docker jenkins
