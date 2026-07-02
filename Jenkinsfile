@@ -15,6 +15,7 @@ pipeline {
             steps {
                 echo 'Building..'
                 // sh './build.sh'
+                sh 'npm i'
                 sh 'ng build'
             }
         }
