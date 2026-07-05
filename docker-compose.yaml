@@ -46,6 +46,7 @@ services:
         condition: service_healthy
     environment:
       - EUREKA_SERVER=http://discovery-service:8761/eureka
+      - SECRET_KEY=${SECRET_KEY}
     # ports:
     #   - 8080:8080
 

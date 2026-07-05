@@ -6,6 +6,7 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,7 +18,8 @@ import user_service.model.User;
 @Service
 public class JwtService {
 
-    private final String secretKey = "y04VbAKcuOebkaYbSwoRNTKimXUaG1RUNoUsrhsPsYR";
+    @Value("${SECRET_KEY:y04VbAKcuOebkaYbSwoRNTKimXUaG1RUNoUsrhsPsYR}")
+    private String secretKey ;
 
     private Key getSignInKey() {
         byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
