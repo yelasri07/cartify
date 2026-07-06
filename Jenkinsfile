@@ -9,11 +9,6 @@ pipeline {
         pollSCM '* * * * *'
     }
 
-    environment {
-        SONAR_SCANNER_HOME = tool 'sonar'
-        SONAR_SERVER = 'sonar-server'
-    }
-
     stages {
         // stage('Build') {
         //     steps {
@@ -99,13 +94,16 @@ pipeline {
             }
         }
 
-    // stage('Quality Gate') {
-    //   steps {
-    //     timeout(time: 5, unit: 'MINUTES') {
-    //         waitForQualityGate abortPipeline: true
-    //     }
-    //   }
-    // }
+        stage('Quality Gate') {
+            steps {
+                script {
+                    def qualityGate = waitForQualityGate()
+                    if (qualityGate.status != 'OK') {
+                        error "Pipeline failed due to Quality Gate status: ${qualityGate.status}"
+                    }
+                }
+            }
+        }
     }
 
     post {
