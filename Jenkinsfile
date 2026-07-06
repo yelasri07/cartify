@@ -17,7 +17,7 @@ pipeline {
     stages {
         // stage('Build') {
         //     steps {
-        //         echo 'Building..'
+        //         echo 'Building..'http://192.168.0.1/
         //         sh './build.sh'
         //         sh '''
         //         cd frontend
