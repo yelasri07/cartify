@@ -31,7 +31,7 @@ for SERVICE in "${SERVICES[@]}"; do
             # Ensure Maven Wrapper is executable
             chmod +x mvnw
             # Clean and Package
-            ./mvnw org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+            $SONAR_SCANNER_HOME/bin/sonar-scanner \
             -Dsonar.projectKey=$SERVICE \
             -Dsonar.projectName="$SERVICE" \
             -Dsonar.host.url=http://sonarqube:9000 \

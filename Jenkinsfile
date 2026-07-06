@@ -8,6 +8,10 @@ pipeline {
     triggers {
         pollSCM '* * * * *'
     }
+    
+    environment {
+        SONAR_SCANNER_HOME = tool 'sonar'
+    }
 
     stages {
         // stage('Build') {
@@ -89,7 +93,7 @@ pipeline {
         stage('SonarQube Analysis') {
           steps {
             script {
-                echo "Scanning..."
+                sh 'echo $SONAR_SCANNER_HOME'
                 sh './sonarscan.sh'
             }
           }
