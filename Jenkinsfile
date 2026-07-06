@@ -10,8 +10,8 @@ pipeline {
     }
     
     environment {
-        SONAR_SCANNER_HOME = 'sonar'
-        SONAR_SERVER = 'sonar'
+        SONAR_SCANNER_HOME = 'tool sonar'
+        SONAR_SERVER = 'sonar-server'
     }
 
     stages {
