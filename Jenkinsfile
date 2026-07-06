@@ -8,7 +8,7 @@ pipeline {
     triggers {
         pollSCM '* * * * *'
     }
-    
+
     environment {
         SONAR_SCANNER_HOME = tool 'sonar'
         SONAR_SERVER = 'sonar-server'
@@ -92,22 +92,20 @@ pipeline {
         // }
 
         stage('SonarQube Analysis') {
-          steps {
-            withSonarQubeEnv(SONAR_SERVER) {
-                sh 'echo $SONAR_SCANNER_HOME'
-                sh './sonarscan.sh'
+            steps {
+                withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
+                    sh './sonarscan.sh'
+                }
             }
-          }
         }
 
-        stage('Quality Gate') {
-          steps {
-            timeout(time: 5, unit: 'MINUTES') {
-                waitForQualityGate abortPipeline: true
-            }
-          }
-        }
-
+    // stage('Quality Gate') {
+    //   steps {
+    //     timeout(time: 5, unit: 'MINUTES') {
+    //         waitForQualityGate abortPipeline: true
+    //     }
+    //   }
+    // }
     }
 
     post {

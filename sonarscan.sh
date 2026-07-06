@@ -31,11 +31,11 @@ for SERVICE in "${SERVICES[@]}"; do
             # Ensure Maven Wrapper is executable
             chmod +x mvnw
             # Clean and Package
-            $SONAR_SCANNER_HOME/bin/sonar-scanner \
-            -Dsonar.projectKey=$SERVICE \
-            -Dsonar.projectName="$SERVICE" \
-            -Dsonar.host.url=http://sonarqube:9000 \
-            -Dsonar.login=sqa_7a604cd9494962f78dfe3a95d16ba31aaffa9d59
+            ./mvnw org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+                -Dsonar.projectKey=$SERVICE \
+                -Dsonar.projectName="$SERVICE" \
+                -Dsonar.host.url=http://sonarqube:9000 \
+                -Dsonar.token=$SONAR_TOKEN
         )
         
         echo -e "${GREEN}✅ Successfully scaned $SERVICE${NC}\n"
