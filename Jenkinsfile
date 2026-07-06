@@ -10,7 +10,8 @@ pipeline {
     }
     
     environment {
-        SONAR_SCANNER_HOME = tool 'sonar'
+        SONAR_SCANNER_HOME = 'sonar'
+        SONAR_SERVER = 'sonar'
     }
 
     stages {
@@ -92,12 +93,21 @@ pipeline {
 
         stage('SonarQube Analysis') {
           steps {
-            script {
+            withSonarQubeEnv(SONAR_SERVER) {
                 sh 'echo $SONAR_SCANNER_HOME'
                 sh './sonarscan.sh'
             }
           }
         }
+
+        stage('Quality Gate') {
+          steps {
+            timeout(time: 5, unit: 'MINUTES') {
+                waitForQualityGate abortPipeline: true
+            }
+          }
+        }
+
     }
 
     post {

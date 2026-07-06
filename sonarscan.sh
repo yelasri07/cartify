@@ -35,7 +35,7 @@ for SERVICE in "${SERVICES[@]}"; do
             -Dsonar.projectKey=$SERVICE \
             -Dsonar.projectName="$SERVICE" \
             -Dsonar.host.url=http://sonarqube:9000 \
-            -Dsonar.token=sqa_7a604cd9494962f78dfe3a95d16ba31aaffa9d59
+            -Dsonar.login=sqa_7a604cd9494962f78dfe3a95d16ba31aaffa9d59
         )
         
         echo -e "${GREEN}✅ Successfully scaned $SERVICE${NC}\n"
