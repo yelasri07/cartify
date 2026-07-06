@@ -11,6 +11,13 @@ services:
       - /tmp:size=256M,mode=1777
     ports:
       - "9000:9000"
+    networks:
+      - ci-net
+
+networks:
+  ci-net:
+    external: true
+
 volumes:
   sonarqube_data:
   sonarqube_extensions:

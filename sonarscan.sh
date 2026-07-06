@@ -34,7 +34,7 @@ for SERVICE in "${SERVICES[@]}"; do
             ./mvnw org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
             -Dsonar.projectKey=$SERVICE \
             -Dsonar.projectName="$SERVICE" \
-            -Dsonar.host.url=http://localhost:9000 \
+            -Dsonar.host.url=http://sonarqube:9000 \
             -Dsonar.token=sqa_7a604cd9494962f78dfe3a95d16ba31aaffa9d59
         )
         
