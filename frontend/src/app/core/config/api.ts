@@ -1,4 +1,4 @@
-const URL = "http://localhost:8080"
+const URL = ""
 export const API = {
     ME: `${URL}/api/users/me`,
     REGISTER: `${URL}/api/auth/register`,
