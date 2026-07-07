@@ -11,6 +11,12 @@ services:
       - jenkins_home:/var/jenkins_home
       - /run/user/1023/docker.sock:/var/run/docker.sock 
     user: root 
+    networks:
+      - ci-net
 
+networks:
+  ci-net:
+    external: true
+    
 volumes:
   jenkins_home:
