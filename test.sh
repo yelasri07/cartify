@@ -40,4 +40,3 @@ for SERVICE in "${SERVICES[@]}"; do
 done
 
 echo -e "${GREEN}🚀 All services tested successfully!${NC}"
-
