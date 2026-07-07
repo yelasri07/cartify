@@ -46,6 +46,7 @@ services:
         condition: service_healthy
     environment:
       - EUREKA_SERVER=http://discovery-service:8761/eureka
+      - SECRET_KEY=${SECRET_KEY}
     # ports:
     #   - 8080:8080
 
@@ -96,7 +97,6 @@ services:
     depends_on:
       api-gateway:
         condition: service_started
-      
 
   user-service:
     build: ./user-service
@@ -148,4 +148,3 @@ volumes:
   product_mongodb_data:
   media_mongodb_data:
   # kafka-data:
-

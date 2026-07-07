@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 
 import javax.crypto.SecretKey;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import api_gateway.model.User;
@@ -14,7 +15,8 @@ import io.jsonwebtoken.security.Keys;
 @Service
 public class JwtService {
 
-    private final String secretKey = "y04VbAKcuOebkaYbSwoRNTKimXUaG1RUNoUsrhsPsYR";
+    @Value("${SECRET_KEY:y04VbAKcuOebkaYbSwoRNTKimXUaG1RUNoUsrhsPsYR}")
+    private String secretKey ;
 
     private SecretKey getSignInKey() {
         byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);

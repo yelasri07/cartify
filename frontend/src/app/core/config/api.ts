@@ -1,13 +1,13 @@
-// const URL = "https://localhost:8080"
+const URL = ""
 export const API = {
-    ME: `/api/users/me`,
-    REGISTER: `/api/auth/register`,
-    LOGIN: `/api/auth/login`,
-    GET_POSTS: `/api/products`,
-    PROFILE: `/api/users`,
-    GET_PROFILE_POSTS: `/api/products/users`,
-    CREATE_PRODUCT: `/api/products`,
-    CREATE_MEDIA: `/api/media`,
-    DELETE_PRODUCT: `/api/products`,
-    UPDATE_PRODUCT: `/api/products`
+    ME: `${URL}/api/users/me`,
+    REGISTER: `${URL}/api/auth/register`,
+    LOGIN: `${URL}/api/auth/login`,
+    GET_POSTS: `${URL}/api/products`,
+    PROFILE: `${URL}/api/users`,
+    GET_PROFILE_POSTS: `${URL}/api/products/users`,
+    CREATE_PRODUCT: `${URL}/api/products`,
+    CREATE_MEDIA: `${URL}/api/media`,
+    DELETE_PRODUCT: `${URL}/api/products`,
+    UPDATE_PRODUCT: `${URL}/api/products`
 }

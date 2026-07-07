@@ -1,6 +1,6 @@
-# Buy-01: Microservices E-commerce Platform
+# Cartify: Microservices E-commerce Platform
 
-Buy-01 is a robust, end-to-end e-commerce marketplace built using a microservices architecture. It leverages **Spring Boot** for the backend, **Angular** for the frontend, and **MongoDB** for persistent storage, with **Kafka** for asynchronous communication.
+Cartify is a robust, end-to-end e-commerce marketplace built using a microservices architecture. It leverages **Spring Boot** for the backend, **Angular** for the frontend, and **MongoDB** for persistent storage, with **Kafka** for asynchronous communication.
 
 ## 🏗️ Architecture Overview
 
@@ -137,4 +137,6 @@ The **API Gateway** (Port 8080) routes traffic to the following endpoints:
 - ✅ **Media Security:** MIME validation and 2MB limit enforced in Media Service.
 - ✅ **Frontend:** Responsive Angular UI with Guards and Interceptors.
 - ✅ **Observability:** Actuator `/health` endpoints configured.
+
+
 
