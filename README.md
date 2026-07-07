@@ -139,3 +139,4 @@ The **API Gateway** (Port 8080) routes traffic to the following endpoints:
 - ✅ **Observability:** Actuator `/health` endpoints configured.
 
 
+
