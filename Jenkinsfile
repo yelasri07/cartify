@@ -85,11 +85,11 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 script {
-                    def mvn = tool 'maven'
 
                     withSonarQubeEnv() {
                         sh """
-                    ${mvn}/bin/mvn clean verify \
+                    cd product-service \
+                    ./mvnw clean verify \
                     org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
                     -Dsonar.projectKey=yelasri07_cartify_0b284056-78e3-4fd8-9765-65f591291ee1 \
                     -Dsonar.projectName=cartify
