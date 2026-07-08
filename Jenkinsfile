@@ -82,18 +82,29 @@ pipeline {
         //     }
         // }
 
-        stage('SonarQube Analysis') {
+        def services = ['product-service', 'user-service']
+
+        stage('SonarQube Analysis & Quality Gate') {
             steps {
-                script {
-                    def scannerHome = tool 'sonar'
-                    echo scannerHome
-                    sh """
-                ${scannerHome}/bin/sonar-scanner \
-                -Dsonar.projectKey=test \
-                -Dsonar.projectName=test \
-                -Dsonar.host.url=http://sonarqube:9000 \
-                -Dsonar.token=sqa_7a604cd9494962f78dfe3a95d16ba31aaffa9d59
-            """
+                withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
+                    script {
+                        for (svc in services) {
+                            dir(svc) {
+                                withSonarQubeEnv('sonar-server') {
+                                    sh """
+                                    chmod +x mvnw
+                                    ./mvnw clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+                                        -Dsonar.projectKey=${svc} \
+                                        -Dsonar.projectName=${svc} \
+                                        -Dsonar.token=${SONAR_TOKEN}
+                                    """
+                                }
+                                timeout(time: 5, unit: 'MINUTES') {
+                                    waitForQualityGate abortPipeline: true
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
