@@ -88,7 +88,7 @@ pipeline {
                 //     sh './sonarscan.sh'
                 // }
                 script {
-                    def scannerHome = tool 'sonar-scanner'
+                    def scannerHome = tool 'sonar'
                     sh '${scannerHome} -Dsonar.projectKey=test \
                         -Dsonar.projectName='test' \
                         -Dsonar.host.url=http://localhost:9000 \
