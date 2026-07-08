@@ -18,7 +18,8 @@ import user_service.model.User;
 @Service
 public class JwtService {
 
-    private String secretKey = "y04VbAKcuOebkaYbSwoRNTKimXUaG1RUNoUsrhsPsYR" ;
+    @Value("${SECRET_KEY:y04VbAKcuOebkaYbSwoRNTKimXUaG1RUNoUsrhsPsYR}")
+    private String secretKey ;
 
     private Key getSignInKey() {
         byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
