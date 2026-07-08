@@ -82,12 +82,12 @@ pipeline {
         //     }
         // }
 
-        def services = ['product-service', 'user-service']
 
         stage('SonarQube Analysis & Quality Gate') {
             steps {
                 withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
                     script {
+                        def services = ['product-service', 'user-service']
                         for (svc in services) {
                             dir(svc) {
                                 withSonarQubeEnv('sonar-server') {
