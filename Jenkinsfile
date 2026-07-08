@@ -93,9 +93,10 @@ pipeline {
                             -Dsonar.token=sqa_7a604cd9494962f78dfe3a95d16ba31aaffa9d59 \
                             -Dsonar.projectKey=frontend
                             '''
-                            timeout(time: 5, unit: 'MINUTES') {
+                        }
+                        
+                        timeout(time: 5, unit: 'MINUTES') {
                                 waitForQualityGate abortPipeline: true
-                            }
                         }
                     }
                 }
