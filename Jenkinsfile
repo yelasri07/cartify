@@ -82,33 +82,46 @@ pipeline {
         //         }
         //     }
         // }
-
-        stage('SonarQube Analysis & Quality Gate') {
+        stage('SonarQube Analysis & Quality Gate - frontend') {
             steps {
-                withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
-                    script {
-                        def services = ['product-service', 'user-service']
-                        for (svc in services) {
-                            dir(svc) {
-                                withSonarQubeEnv('sonar-server') {
-                                    sh """
-                                    ./mvnw clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-                                        -Dsonar.projectKey=${svc} \
-                                        -Dsonar.projectName="${svc}" \
-                                        -Dsonar.host.url=http://sonarqube:9000 \
-                                        -Dsonar.token=\$SONAR_TOKEN
-                                    """
-                                }
-                                timeout(time: 5, unit: 'MINUTES') {
-                                    waitForQualityGate abortPipeline: true
-                                }
-                            }
-                        }
+                script {
+                    dir('frontend') {
+                        sh 'npm install -g @sonar/scan'
+                        sh '''sonar \
+                        -Dsonar.host.url=http://sonarqube:9000 \
+                        -Dsonar.token=sqa_7a604cd9494962f78dfe3a95d16ba31aaffa9d59 \
+                        -Dsonar.projectKey=frontend
+                        '''
                     }
                 }
             }
         }
 
+        // stage('SonarQube Analysis & Quality Gate - backend') {
+        //     steps {
+        //         withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
+        //             script {
+        //                 def services = ['product-service', 'user-service']
+        //                 for (svc in services) {
+        //                     dir(svc) {
+        //                         withSonarQubeEnv('sonar-server') {
+        //                             sh '''
+        //                             ./mvnw clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+        //                                 -Dsonar.projectKey=${svc} \
+        //                                 -Dsonar.projectName="${svc}" \
+        //                                 -Dsonar.host.url=http://sonarqube:9000 \
+        //                                 -Dsonar.token=\$SONAR_TOKEN
+        //                             '''
+        //                         }
+        //                         timeout(time: 5, unit: 'MINUTES') {
+        //                             waitForQualityGate abortPipeline: true
+        //                         }
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
     }
 
 // post {
