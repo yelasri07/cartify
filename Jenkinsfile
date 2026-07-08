@@ -1,5 +1,4 @@
-// def services = ['product-service', 'user-service']
-// def qualityGateResults = [:]
+
 pipeline {
     agent {
         node {
