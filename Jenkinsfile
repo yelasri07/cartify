@@ -96,7 +96,7 @@ pipeline {
                                         -Dsonar.projectKey=${svc} \
                                         -Dsonar.projectName="${svc}" \
                                         -Dsonar.host.url=http://sonarqube:9000 \
-                                        -Dsonar.token=sqa_7a604cd9494962f78dfe3a95d16ba31aaffa9d59
+                                        -Dsonar.token=\$SONAR_TOKEN
                                     """
                                 }
                                 timeout(time: 5, unit: 'MINUTES') {
@@ -109,71 +109,6 @@ pipeline {
             }
         }
 
-        // stage('SonarQube Analysis') {
-        //     steps {
-        //         withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
-        //             script {
-        //                 for (svc in services) {
-        //                     dir(svc) {
-        //                         withSonarQubeEnv('sonar-server') {
-        //                             sh """
-        //                         chmod +x mvnw
-        //                         ./mvnw clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-        //                             -Dsonar.projectKey=${svc} \
-        //                             -Dsonar.projectName=${svc} \
-        //                             -Dsonar.token=${SONAR_TOKEN}
-        //                     """
-        //                         }
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
-
-        // stage('Quality Gate') {
-        //     steps {
-        //         script {
-        //             for (svc in services) {
-        //                 dir(svc) {
-        //                     timeout(time: 5, unit: 'MINUTES') {
-        //                         def qg = waitForQualityGate()
-        //                         qualityGateResults[svc] = qg.status
-        //                     }
-        //                 }
-        //             }
-
-        //             def failed = qualityGateResults.findAll { it.value != 'OK' }
-        //             if (failed) {
-        //                 echo "Quality Gate FAILED for: ${failed.keySet().join(', ')}"
-        //                 qualityGateResults.each { svc, status ->
-        //                     echo " - ${svc}: ${status}"
-        //                 }
-        //                 error "Aborting pipeline: quality gate failed for ${failed.size()} service(s)"
-        //     } else {
-        //                 echo "Quality Gate PASSED for all services: ${qualityGateResults.keySet().join(', ')}"
-        //             }
-        //         }
-        //     }
-        // }
-
-        // stage('code scan') {
-        //     steps {
-        //         withSonarQubeEnv('sonar-server') {
-        //             sh '''
-        //             ./sonarscan.sh
-        //             '''
-        //         }
-        //     }
-        // }
-
-    // stage('Quality Gate') {
-    //     steps {
-    //         timeout(time: 5, unit: 'MINUTES') {
-    //             waitForQualityGate abortPipeline: true
-    //         }
-    //     }
-    // }
     }
 
 // post {
