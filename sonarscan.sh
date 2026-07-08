@@ -12,8 +12,8 @@ echo -e "${BLUE}🔨 Starting Multi-Service scan Process...${NC}\n"
 
 # Array of service directories
 SERVICES=(
-    "product-service"
     "user-service"
+    "product-service"
 )
 
     # "api-gateway"
