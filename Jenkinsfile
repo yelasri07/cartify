@@ -84,8 +84,17 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
-                    sh './sonarscan.sh'
+                script {
+
+                    withSonarQubeEnv('sonar-server') {
+                        sh """
+                    cd product-service \
+                    ./mvnw clean verify \
+                    org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+                    -Dsonar.projectKey=yelasri07_cartify_0b284056-78e3-4fd8-9765-65f591291ee1 \
+                    -Dsonar.projectName=cartify
+                """
+                    }
                 }
             }
         }
@@ -98,24 +107,24 @@ pipeline {
         }
     }
 
-    post {
-        success {
-            script {
-                mail(
-                to: 'adnane.elmir1@gmail.com, elasriyoussef604@gmail.com',
-                subject: "✅ SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                body: "Build passed.\nLogs: ${env.BUILD_URL}"
-            )
-            }
-        }
-        failure {
-            script {
-                mail(
-                to: 'adnane.elmir1@gmail.com, elasriyoussef604@gmail.com',
-                subject: "❌ FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                body: "Build failed.\nLogs: ${env.BUILD_URL}console"
-            )
-            }
-        }
-    }
+// post {
+//     success {
+//         script {
+//             mail(
+//             to: 'adnane.elmir1@gmail.com, elasriyoussef604@gmail.com',
+//             subject: "✅ SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+//             body: "Build passed.\nLogs: ${env.BUILD_URL}"
+//         )
+//         }
+//     }
+//     failure {
+//         script {
+//             mail(
+//             to: 'adnane.elmir1@gmail.com, elasriyoussef604@gmail.com',
+//             subject: "❌ FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+//             body: "Build failed.\nLogs: ${env.BUILD_URL}console"
+//         )
+//         }
+//     }
+// }
 }
