@@ -86,7 +86,7 @@ pipeline {
             steps {
                 script {
 
-                    withSonarQubeEnv() {
+                    withSonarQubeEnv('sonar-server') {
                         sh """
                     cd product-service \
                     ./mvnw clean verify \
