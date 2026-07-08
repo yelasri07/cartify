@@ -1,3 +1,5 @@
+def services = ['product-service', 'user-service']
+def qualityGateResults = [:]
 pipeline {
     agent {
         node {
@@ -107,9 +109,6 @@ pipeline {
         //         }
         //     }
         // }
-
-        def services = ['product-service', 'user-service']
-        def qualityGateResults = [:]
 
         stage('SonarQube Analysis') {
             steps {
