@@ -94,24 +94,24 @@ pipeline {
 
     }
 
-    post {
-        success {
-            script {
-                mail(
-                to: 'adnane.elmir1@gmail.com, elasriyoussef604@gmail.com',
-                subject: "✅ SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                body: "Build passed.\nLogs: ${env.BUILD_URL}"
-            )
-            }
-        }
-        failure {
-            script {
-                mail(
-                to: 'adnane.elmir1@gmail.com, elasriyoussef604@gmail.com',
-                subject: "❌ FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                body: "Build failed.\nLogs: ${env.BUILD_URL}console"
-            )
-            }
-        }
-    }
+    // post {
+    //     success {
+    //         script {
+    //             mail(
+    //             to: 'adnane.elmir1@gmail.com, elasriyoussef604@gmail.com',
+    //             subject: "✅ SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+    //             body: "Build passed.\nLogs: ${env.BUILD_URL}"
+    //         )
+    //         }
+    //     }
+    //     failure {
+    //         script {
+    //             mail(
+    //             to: 'adnane.elmir1@gmail.com, elasriyoussef604@gmail.com',
+    //             subject: "❌ FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+    //             body: "Build failed.\nLogs: ${env.BUILD_URL}console"
+    //         )
+    //         }
+    //     }
+    // }
 }
