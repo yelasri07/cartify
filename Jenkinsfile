@@ -84,10 +84,7 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                def mvn = tool 'Default Maven'
-                withSonarQubeEnv() {
-                    sh "cd product-service && ${mvn}/bin/mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=yelasri07_cartify_0b284056-78e3-4fd8-9765-65f591291ee1 -Dsonar.projectName='cartify'"
-                }
+                sh "cd product-service && ./mvnw clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=yelasri07_cartify_0b284056-78e3-4fd8-9765-65f591291ee1 -Dsonar.projectName='cartify'"
             }
         }
     }
