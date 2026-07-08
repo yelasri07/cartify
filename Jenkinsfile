@@ -82,32 +82,14 @@ pipeline {
         //     }
         // }
 
-
-        stage('SonarQube Analysis & Quality Gate') {
-            steps {
-                withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
-                    script {
-                        def services = ['product-service', 'user-service']
-                        for (svc in services) {
-                            dir(svc) {
-                                withSonarQubeEnv('sonar-server') {
-                                    sh """
-                                    chmod +x mvnw
-                                    ./mvnw clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-                                        -Dsonar.projectKey=${svc} \
-                                        -Dsonar.projectName=${svc} \
-                                        -Dsonar.token=${SONAR_TOKEN}
-                                    """
-                                }
-                                timeout(time: 5, unit: 'MINUTES') {
-                                    waitForQualityGate abortPipeline: true
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+    stage('code scan') {
+        steps {
+            sh '''
+                ./sonarscan.sh
+            '''
         }
+    }
+       
 
     // stage('Quality Gate') {
     //     steps {
