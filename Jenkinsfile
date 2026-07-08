@@ -1,5 +1,5 @@
-def services = ['product-service', 'user-service']
-def qualityGateResults = [:]
+// def services = ['product-service', 'user-service']
+// def qualityGateResults = [:]
 pipeline {
     agent {
         node {
