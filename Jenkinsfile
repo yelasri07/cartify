@@ -1,3 +1,4 @@
+
 pipeline {
     agent {
         node {
@@ -82,22 +83,32 @@ pipeline {
         //     }
         // }
 
-        stage('SonarQube Analysis') {
+        stage('SonarQube Analysis & Quality Gate') {
             steps {
-                script {
-
-                    withSonarQubeEnv('sonar-server') {
-                        sh """
-                    cd product-service \
-                    ./mvnw clean verify \
-                    org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-                    -Dsonar.projectKey=yelasri07_cartify_0b284056-78e3-4fd8-9765-65f591291ee1 \
-                    -Dsonar.projectName=cartify
-                """
+                withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
+                    script {
+                        def services = ['product-service', 'user-service']
+                        for (svc in services) {
+                            dir(svc) {
+                                withSonarQubeEnv('sonar-server') {
+                                    sh """
+                                    ./mvnw clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+                                        -Dsonar.projectKey=${svc} \
+                                        -Dsonar.projectName="${svc}" \
+                                        -Dsonar.host.url=http://sonarqube:9000 \
+                                        -Dsonar.token=\$SONAR_TOKEN
+                                    """
+                                }
+                                timeout(time: 5, unit: 'MINUTES') {
+                                    waitForQualityGate abortPipeline: true
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
+
     }
 
 // post {

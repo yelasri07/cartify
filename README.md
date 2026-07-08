@@ -140,7 +140,3 @@ The **API Gateway** (Port 8080) routes traffic to the following endpoints:
 
 
 
-
-
-
-
