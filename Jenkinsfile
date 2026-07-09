@@ -103,6 +103,7 @@ pipeline {
             }
         }
 
+
     // stage('SonarQube Analysis & Quality Gate - backend') {
     //     steps {
     //         withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
