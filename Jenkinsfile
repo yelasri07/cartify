@@ -56,7 +56,7 @@ pipeline {
                         for (svc in services) {
                             dir(svc) {
                                 withSonarQubeEnv('sonar-server') {
-                                    sh 'echo ${svc}'
+                                    sh 'echo $svc'
                                     sh '''
                                     ./mvnw clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
                                         -Dsonar.projectKey=${svc} \
