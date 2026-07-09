@@ -57,7 +57,7 @@ pipeline {
                             dir(svc) {
                                 withSonarQubeEnv('sonar-server') {
                                     sh """
-                                    ./mvnw clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+                                    ./mvnw org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
                                         -Dsonar.projectKey=${svc} \
                                         -Dsonar.projectName=${svc} \
                                         -Dsonar.host.url=http://sonarqube:9000 \
