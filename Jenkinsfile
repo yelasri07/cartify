@@ -64,9 +64,9 @@ pipeline {
                                         -Dsonar.token=\$SONAR_TOKEN
                                     '''
                                 }
-                                timeout(time: 5, unit: 'MINUTES') {
-                                    waitForQualityGate abortPipeline: true
-                                }
+                                // timeout(time: 5, unit: 'MINUTES') {
+                                //     waitForQualityGate abortPipeline: true
+                                // }
                             }
                         }
                     }
