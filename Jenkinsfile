@@ -59,7 +59,7 @@ pipeline {
                                     sh '''
                                     ./mvnw clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
                                         -Dsonar.projectKey=${svc} \
-                                        -Dsonar.projectName="${svc}" \
+                                        -Dsonar.projectName=${svc} \
                                         -Dsonar.host.url=http://sonarqube:9000 \
                                         -Dsonar.token=\$SONAR_TOKEN
                                     '''
