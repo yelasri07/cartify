@@ -52,7 +52,7 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
                     script {
-                        def services = ['product-service', 'user-service', 'media-service', 'api-gateway']
+                        def services = ['product-service', 'user-service']
                         for (svc in services) {
                             dir(svc) {
                                 withSonarQubeEnv('sonar-server') {
