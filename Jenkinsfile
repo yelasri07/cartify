@@ -56,14 +56,13 @@ pipeline {
                         for (svc in services) {
                             dir(svc) {
                                 withSonarQubeEnv('sonar-server') {
-                                    sh '''
-                                    sh 'echo $svc'
+                                    sh """
                                     ./mvnw clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-                                        -Dsonar.projectKey=$svc \
-                                        -Dsonar.projectName=$svc \
+                                        -Dsonar.projectKey=${svc} \
+                                        -Dsonar.projectName=${svc} \
                                         -Dsonar.host.url=http://sonarqube:9000 \
                                         -Dsonar.token=\$SONAR_TOKEN
-                                    '''
+                                    """
                                 }
                                 timeout(time: 5, unit: 'MINUTES') {
                                     waitForQualityGate abortPipeline: true
