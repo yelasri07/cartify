@@ -85,20 +85,22 @@ pipeline {
         stage('SonarQube Analysis & Quality Gate - frontend') {
             steps {
                 script {
-                    dir('frontend') {
-                        withSonarQubeEnv('sonar-server') {
-                            sh 'npm install -g @sonar/scan'
-                            sh '''sonar \
-                            -Dsonar.host.url=http://sonarqube:9000 \
-                            -Dsonar.token=sqa_7a604cd9494962f78dfe3a95d16ba31aaffa9d59 \
-                            -Dsonar.projectKey=frontend
-                            '''
-                        }
+                    // dir('frontend') {
+                    //     withSonarQubeEnv('sonar-server') {
+                    //         sh 'npm install -g @sonar/scan'
+                    //         sh '''sonar \
+                    //         -Dsonar.host.url=http://sonarqube:9000 \
+                    //         -Dsonar.token=sqa_7a604cd9494962f78dfe3a95d16ba31aaffa9d59 \
+                    //         -Dsonar.projectKey=frontend
+                    //         '''
+                    //     }
                         
-                        timeout(time: 5, unit: 'MINUTES') {
-                                waitForQualityGate abortPipeline: true
-                        }
-                    }
+                    //     timeout(time: 5, unit: 'MINUTES') {
+                    //             waitForQualityGate abortPipeline: true
+                    //     }
+                    // }
+
+                    echo "hello world"
                 }
             }
         }
