@@ -31,13 +31,15 @@ pipeline {
             steps {
                 script {
                     dir('frontend') {
-                        withSonarQubeEnv('sonar-server') {
-                            sh 'npm install -g @sonar/scan'
-                            sh '''sonar \
+                        withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
+                            withSonarQubeEnv('sonar-server') {
+                                sh 'npm install -g @sonar/scan'
+                                sh '''sonar \
                             -Dsonar.host.url=http://sonarqube:9000 \
-                            -Dsonar.token=sqa_7a604cd9494962f78dfe3a95d16ba31aaffa9d59 \
+                            -Dsonar.token=\$SONAR_TOKEN \
                             -Dsonar.projectKey=frontend
                             '''
+                            }
                         }
 
                         timeout(time: 5, unit: 'MINUTES') {
