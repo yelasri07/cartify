@@ -36,8 +36,8 @@ pipeline {
                                 sh 'npm install -g @sonar/scan'
                                 sh '''sonar \
                             -Dsonar.host.url=http://sonarqube:9000 \
-                            -Dsonar.token=\$SONAR_TOKEN \
-                            -Dsonar.projectKey=frontend
+                            -Dsonar.projectKey=frontend \
+                            -Dsonar.token=\$SONAR_TOKEN
                             '''
                             }
                         }
