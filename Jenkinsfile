@@ -77,6 +77,9 @@ pipeline {
         }
 
         stage('Deliver') {
+            when {
+                branch 'main'
+            }
             steps {
                 withCredentials([
                     file(credentialsId: 'buy01-env-file', variable: 'ENV_FILE'),
