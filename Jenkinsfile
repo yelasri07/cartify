@@ -78,7 +78,9 @@ pipeline {
 
         stage('Deliver') {
             when {
-                expression { env.BRANCH_NAME == 'main' }
+                not {
+                    changeRequest()
+                }
             }
             steps {
                 withCredentials([
