@@ -78,7 +78,7 @@ pipeline {
 
         stage('Deliver') {
             when {
-                branch 'main'
+                expression { env.BRANCH_NAME == 'main' }
             }
             steps {
                 withCredentials([
