@@ -200,7 +200,6 @@ The **API Gateway** (Port 8080) routes traffic to the following endpoints:
 - `build.sh`: Packages all Spring Boot services using Maven Wrapper.
 - `docker_clean.sh`: Forcefully stops and removes all containers, images, and volumes.
 - `run_docker_dns.sh`: Helper to restart Docker with custom DNS settings (if needed for registry access).
-- `sonarscan.sh`: Runs SonarQube static analysis across all microservices.
 
 ---
 
