@@ -111,6 +111,7 @@ services:
     environment:
       - EUREKA_SERVER=http://discovery-service:8761/eureka
       - MONGO_URL=mongodb://buy01:buy01@user-db:27017/buy01?authSource=admin
+      - SECRET_KEY=${SECRET_KEY}
 
   product-service:
     build: ./product-service
