@@ -32,7 +32,7 @@ pipeline {
                 script {
                     dir('frontend') {
                         withSonarQubeEnv('sonar-server') {
-                            sh 'npm install @sonar/scan'
+                            sh 'npm install -g @sonar/scan'
                             sh '''sonar \
                             -Dsonar.host.url=http://sonarqube:9000 \
                             -Dsonar.token=sqa_7a604cd9494962f78dfe3a95d16ba31aaffa9d59 \
