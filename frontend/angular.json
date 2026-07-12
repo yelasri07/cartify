@@ -61,9 +61,7 @@
         },
         "serve": {
           "options": {
-            "allowedHosts": [
-              "buy01.nport.link"
-            ]
+            "allowedHosts": ["buy01.nport.link"]
           },
           "builder": "@angular/build:dev-server",
           "configurations": {
@@ -84,7 +82,8 @@
           "options": {
             "buildTarget": "::development",
             "tsConfig": "tsconfig.spec.json",
-            "runner": "vitest"
+            "runner": "vitest",
+            "codeCoverageReporters": ["lcov", "text"]
           }
         }
       }
