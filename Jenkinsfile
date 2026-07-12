@@ -23,6 +23,7 @@ pipeline {
             steps {
                 echo 'Testing..'
                 sh './test.sh'
+                sh 'npm install --save-dev @vitest/coverage-v8'
                 sh 'cd frontend && ng test --watch=false --code-coverage'
             }
         }
@@ -34,7 +35,6 @@ pipeline {
                         withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
                             withSonarQubeEnv('sonar-server') {
                                 sh 'npm install -g @sonar/scan'
-                                sh 'npm install --save-dev @vitest/coverage-v8'
                                 sh '''sonar \
                                     -Dsonar.host.url=http://sonarqube:9000 \
                                     -Dsonar.projectKey=frontend \
