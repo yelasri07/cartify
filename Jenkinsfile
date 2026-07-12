@@ -23,7 +23,7 @@ pipeline {
             steps {
                 echo 'Testing..'
                 sh './test.sh'
-                sh 'cd frontend && ng test --watch=false'
+                sh 'cd frontend && ng test --watch=false --code-coverage'
             }
         }
 
@@ -37,6 +37,7 @@ pipeline {
                                 sh '''sonar \
                                     -Dsonar.host.url=http://sonarqube:9000 \
                                     -Dsonar.projectKey=frontend \
+                                    -Dsonar.javascript.lcov.reportPaths=coverage/frontend/lcov.info \
                                     -Dsonar.token=\$SONAR_TOKEN
                                 '''
                             }
@@ -101,8 +102,8 @@ pipeline {
                     script {
                         try {
                             sh '''
-                                docker compose down
-                                docker compose up -d --build
+                                docker compose down -p buy01
+                                docker compose up -p buy01 -d --build
                                 docker compose ps
                             '''
                         } catch (err) {
@@ -112,7 +113,7 @@ pipeline {
 
                             echo "Deploy failed — rolling back to ${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}"
                             sh '''
-                                docker compose down
+                                docker compose down -p buy01
                                 git checkout ${GIT_PREVIOUS_SUCCESSFUL_COMMIT}
 
                                 cp "$ENV_FILE" .env
@@ -121,7 +122,7 @@ pipeline {
                                 cp "$SSL_PASSPHRASE" frontend/securePassphrase
 
                                 ./build.sh
-                                docker compose up -d --build
+                                docker compose up -p buy01 -d --build
                             '''
                             error "Deployment failed, rolled back to previous successful commit ${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}"
                     } finally {
