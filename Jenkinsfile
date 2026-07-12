@@ -141,6 +141,10 @@ pipeline {
     }
 
     post {
+        always {
+            junit testResults: '**/target/surefire-reports/*.xml', allowEmptyResults: true
+            archiveArtifacts artifacts: '**/target/surefire-reports/*.xml, frontend/coverage/**', allowEmptyArchive: true
+        }
         success {
             setBuildStatus('Build succeeded', 'SUCCESS')
             script {
