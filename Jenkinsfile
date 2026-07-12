@@ -103,8 +103,8 @@ pipeline {
                     script {
                         try {
                             sh '''
-                                docker compose down -p buy01
-                                docker compose up -p buy01 -d --build
+                                docker compose -p buy01 down
+                                docker compose -p buy01 up -d --build
                                 docker compose ps
                             '''
                         } catch (err) {
@@ -114,7 +114,7 @@ pipeline {
 
                             echo "Deploy failed — rolling back to ${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}"
                             sh '''
-                                docker compose down -p buy01
+                                docker compose -p buy01 down
                                 git checkout ${GIT_PREVIOUS_SUCCESSFUL_COMMIT}
 
                                 cp "$ENV_FILE" .env
@@ -123,7 +123,7 @@ pipeline {
                                 cp "$SSL_PASSPHRASE" frontend/securePassphrase
 
                                 ./build.sh
-                                docker compose up -p buy01 -d --build
+                                docker compose -p buy01 up -d --build
                             '''
                             error "Deployment failed, rolled back to previous successful commit ${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}"
                     } finally {
