@@ -84,7 +84,10 @@
           "options": {
             "buildTarget": "::development",
             "tsConfig": "tsconfig.spec.json",
-            "runner": "vitest"
+            "runner": "vitest",
+            "codeCoverage": true,
+            "coverageReporters": ["text", "lcovonly"],
+            "codeCoverageExclude": ["src/**/*.spec.ts"]
           }
         }
       }
