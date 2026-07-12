@@ -38,7 +38,7 @@ pipeline {
                                 sh '''sonar \
                                     -Dsonar.host.url=http://sonarqube:9000 \
                                     -Dsonar.projectKey=frontend \
-                                    -Dsonar.javascript.lcov.reportPaths=coverage/frontend/lcov.info \
+                                    -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
                                     -Dsonar.token=\$SONAR_TOKEN
                                 '''
                             }
