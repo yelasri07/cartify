@@ -225,6 +225,3 @@ The **API Gateway** (Port 8080) routes traffic to the following endpoints:
 - ✅ **Media Security:** MIME validation and 2MB limit enforced in Media Service.
 - ✅ **Frontend:** Responsive Angular UI with Guards and Interceptors.
 - ✅ **Observability:** Actuator `/health` endpoints configured.
-
-
-
