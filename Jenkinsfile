@@ -10,7 +10,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building..'
-                sh './build.sh'
+                sh './scripts/build.sh'
                 sh '''
                 cd frontend
                 npm i
@@ -22,7 +22,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Testing..'
-                sh './test.sh'
+                sh './scripts/test.sh'
                 sh 'npm install --save-dev @vitest/coverage-v8'
                 sh 'cd frontend && ng test --watch=false --code-coverage'
             }
@@ -122,7 +122,7 @@ pipeline {
                                 cp "$SSL_KEY" frontend/private.key
                                 cp "$SSL_PASSPHRASE" frontend/securePassphrase
 
-                                ./build.sh
+                                ./scripts/build.sh
                                 docker compose -p cartify up -d --build
                             '''
                             error "Deployment failed, rolled back to previous successful commit ${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}"
