@@ -79,7 +79,6 @@ public class GlobalExceptionHandler {
                 Map<String, String> errors = new HashMap<>();
                 ex.getBindingResult().getFieldErrors()
                                 .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
-                System.out.println(errors);
 
                 log.error("Unhandled exception: {}", ex.getMessage());
 

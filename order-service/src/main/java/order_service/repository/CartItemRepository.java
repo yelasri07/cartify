@@ -3,9 +3,9 @@ package order_service.repository;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-import order_service.model.CartItems;
+import order_service.model.CartItem;
 
 @Repository
-public interface CartItemsRepository extends MongoRepository<CartItems, String> {
+public interface CartItemRepository extends MongoRepository<CartItem, String> {
     
 }

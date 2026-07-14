@@ -100,13 +100,14 @@ public class ProductServiceTest {
         void shouldGetProductByIdSuccessfully() {
             // Arrange
             final String productId = "product-id";
+            final String userId = "user-123";
             when(productRepository.findById(productId))
                     .thenReturn(Optional.of(productResponse));
             when(mediaClient.getProductMedia(anyString()))
                     .thenReturn(List.of("media-url1", "media-url2"));
 
             // Act
-            ProductOutput product = productService.getProduct(productId);
+            ProductOutput product = productService.getProduct(productId, userId);
 
             // Assert
             assertNotNull(product);
@@ -193,7 +194,7 @@ public class ProductServiceTest {
 
             // When & Then
             NotFoundException exception = assertThrows(NotFoundException.class,
-                    () -> productService.getProduct(productId));
+                    () -> productService.getProduct(productId, anyString()));
 
             assertNotNull(exception);
             assertEquals("Whoops! product not found", exception.getMessage());
