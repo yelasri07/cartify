@@ -130,8 +130,8 @@ touch frontend/securePassphrase
 ### 3. Build the Services
 Use the provided build script to package all backend microservices:
 ```bash
-chmod +x build.sh
-./build.sh
+chmod +x ./scripts/build.sh
+./scripts/build.sh
 ```
 
 ### 4. Launch the Application
