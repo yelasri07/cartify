@@ -89,6 +89,19 @@ services:
     volumes:
       - media_mongodb_data:/data/db
 
+  order-db:
+    image: mongo
+    container_name: order_mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
+      MONGO_INITDB_DATABASE: ${DB_NAME}
+    ports:
+      - "27020:27017"
+    volumes:
+      - order_mongodb_data:/data/db
+
   angular-app:
     build:
       context: ./frontend
@@ -144,8 +157,24 @@ services:
       - MONGO_URL=mongodb://buy01:buy01@media-db:27017/buy01?authSource=admin
       - CLOUDINARY_URL=${CLOUDINARY_URL}
 
+  order-service:
+    build: ./order-service
+    container_name: order-service
+    depends_on:
+      discovery-service:
+        condition: service_healthy
+      order-db:
+        condition: service_started
+      broker:
+        condition: service_started
+    environment:
+      - EUREKA_SERVER=http://discovery-service:8761/eureka
+      - BROKER_URL=broker:9092
+      - MONGO_URL=mongodb://buy01:buy01@order-db:27017/buy01?authSource=admin
+
 volumes:
   user_mongodb_data:
   product_mongodb_data:
   media_mongodb_data:
+  order_mongodb_data:
   # kafka-data:
