@@ -46,9 +46,10 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getOrderById(@PathVariable String id) {
+    public OrderDetails getOrderById(@PathVariable String id, @AuthenticationPrincipal String currentUserId) {
         // TODO: fetch order + items, check ownership
-        return null;
+        System.out.println("##########");
+        return orderService.getOrderById(id, currentUserId);
     }
 
     @GetMapping("/{id}/items")

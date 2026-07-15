@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import jakarta.ws.rs.ForbiddenException;
 import lombok.RequiredArgsConstructor;
 import order_service.exception.NotFoundException;
 import order_service.model.CartItem;
@@ -54,7 +55,13 @@ public class OrderService {
         return orderDetailsRepository.findAllByUserId(currentUserID);
     }
 
-
+    public OrderDetails getOrderById(String orderId, String currentUserID) {
+        OrderDetails orderDetails = orderDetailsRepository.findById(orderId).orElseThrow(()->new NotFoundException("Whoops! order cart not found."));
+        // if (orderDetails.getUserId() != currentUserID){
+        //         throw new ForbiddenException("Not owner of order");
+        // }
+        return orderDetails;
+    }
 
     public OrderItem cartItemToOrderItem(CartItem cartItem, String orderId) {
         return OrderItem.builder()
