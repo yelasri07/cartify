@@ -45,10 +45,16 @@ public class OrderService {
         orderItemsRepository.saveAll(orderItems);
         
         Map<String, Object> response = new HashMap<>();
-        // response.put("user_details", UserToUserOutput(user));
+        response.put("order_details", savedOrder);
 
         return response;
     }
+
+    public List<OrderDetails> getMyOrders(String currentUserID) {
+        return orderDetailsRepository.findAllByUserId(currentUserID);
+    }
+
+
 
     public OrderItem cartItemToOrderItem(CartItem cartItem, String orderId) {
         return OrderItem.builder()

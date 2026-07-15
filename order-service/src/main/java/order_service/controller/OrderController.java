@@ -1,5 +1,8 @@
 package order_service.controller;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -10,9 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
+import order_service.model.OrderDetails;
 import order_service.service.OrderService;
 
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,19 +32,17 @@ public class OrderController {
     // ---------- Checkout ----------
 
     @PostMapping
-    public ResponseEntity<?> createOrder(@AuthenticationPrincipal String currentUserId) {
-        // TODO: create order from cart, snapshot items, set status PENDING, clear cart
-        orderService.createOrder(currentUserId);
-        
-        return null;
+    @ResponseStatus(code = HttpStatus.CREATED)
+    public Map<String, Object> createOrder(@AuthenticationPrincipal String currentUserId) {
+        return orderService.createOrder(currentUserId);
     }
 
     // ---------- Client-facing ----------
 
     @GetMapping
-    public ResponseEntity<?> getMyOrders(@RequestParam(required = false) String status) {
+    public List<OrderDetails> getMyOrders(@RequestParam(required = false) String status, @AuthenticationPrincipal String currentUserId) {
         // TODO: list orders for logged-in client (filter by status/date, paginate)
-        return null;
+        return orderService.getMyOrders(currentUserId);
     }
 
     @GetMapping("/{id}")
