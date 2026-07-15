@@ -20,4 +20,6 @@ public class OrderDetails extends Auditable {
     private String userId;
     @Field(name = "total")
     private Double total;
+    @Field(name = "status")
+    private String status;
 }

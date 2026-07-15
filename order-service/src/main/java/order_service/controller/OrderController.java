@@ -2,11 +2,16 @@ package order_service.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import lombok.RequiredArgsConstructor;
+import order_service.service.OrderService;
+
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -14,13 +19,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/orders")
+@RequiredArgsConstructor
 public class OrderController {
+
+    private final OrderService orderService;
 
     // ---------- Checkout ----------
 
     @PostMapping
-    public ResponseEntity<?> createOrder(@RequestBody Object request) {
+    public ResponseEntity<?> createOrder(@AuthenticationPrincipal String currentUserId) {
         // TODO: create order from cart, snapshot items, set status PENDING, clear cart
+        orderService.createOrder(currentUserId);
+        
         return null;
     }
 

@@ -8,11 +8,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-@Document(collection = "order_items")
+@Document(collection = "order_item")
 @Builder
 @Getter
 @Setter
-public class OrderItems {
+public class OrderItem {
     @Id
     private String id;
     @Field(name = "order_id")

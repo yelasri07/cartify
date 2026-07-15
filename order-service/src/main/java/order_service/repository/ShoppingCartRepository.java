@@ -9,5 +9,6 @@ import order_service.model.ShoppingCart;
 public interface ShoppingCartRepository extends MongoRepository<ShoppingCart, String> {
 
     Optional<ShoppingCart> findByUserId(final String userId);
+    
 
 }
