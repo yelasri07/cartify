@@ -59,18 +59,7 @@ public class ProductService {
                                                                                                    // products
                 : this.productRepository.findByUserId(userId, pageable).getContent(); // For profile page products
 
-        // send one request to get users for each product
-        Set<String> userIds = entities.stream().map(product -> product.getUserId()).collect(Collectors.toSet());
-        Map<String, UserDTO> users = this.userClient.getUserProducts(userIds);
-
-        // send one request to get media for each product
-        List<String> productIds = entities.stream().map(product -> product.getId()).toList();
-        Map<String, List<String>> mediaProducts = this.mediaClient.getMediaProducts(productIds);
-
-        List<ProductOutput> products = entities.stream().map(product -> ProductMapper.toProductOutputDto(product,
-                mediaProducts.get(product.getId()), users.get(product.getUserId()))).toList();
-
-        return products;
+        return this.getUsersAndMediaOfProducts(entities);
     }
 
     public ProductOutput getProduct(final String productId, final String userId) {
@@ -118,6 +107,26 @@ public class ProductService {
         return Map.of(
                 "productId", product.getId(),
                 "message", "Product deleted successfully!");
+    }
+
+    public List<ProductOutput> getProductsCarts(final Set<String> productIds) {
+        List<Product> entities = this.productRepository.findByIdIn(productIds);
+        return this.getUsersAndMediaOfProducts(entities);
+    }
+
+    private List<ProductOutput> getUsersAndMediaOfProducts(final List<Product> entities) {
+        // send one request to get users for each product
+        Set<String> userIds = entities.stream().map(product -> product.getUserId()).collect(Collectors.toSet());
+        Map<String, UserDTO> users = this.userClient.getUserProducts(userIds);
+
+        // send one request to get media for each product
+        List<String> productIds = entities.stream().map(product -> product.getId()).toList();
+        Map<String, List<String>> mediaProducts = this.mediaClient.getMediaProducts(productIds);
+
+        List<ProductOutput> products = entities.stream().map(product -> ProductMapper.toProductOutputDto(product,
+                mediaProducts.get(product.getId()), users.get(product.getUserId()))).toList();
+
+        return products;
     }
 
 }
