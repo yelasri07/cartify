@@ -37,10 +37,10 @@ public class OrderService {
                 .status("PENDING")
                 .total(0.)
                 .build();
-                orderDetailsRepository.save(orderDetails);
+        OrderDetails savedOrder = orderDetailsRepository.save(orderDetails);
 
         List<OrderItem> orderItems = cartItemRepository.findAllByshoppingCartId(shoppingCart.getId())
-                .stream().map(item->cartItemToOrderItem(item)).toList();
+                .stream().map(item->cartItemToOrderItem(item, savedOrder.getId())).toList();
 
         orderItemsRepository.saveAll(orderItems);
         
@@ -50,8 +50,9 @@ public class OrderService {
         return response;
     }
 
-    public OrderItem cartItemToOrderItem(CartItem cartItem) {
+    public OrderItem cartItemToOrderItem(CartItem cartItem, String orderId) {
         return OrderItem.builder()
+                .orderId(orderId)
                 .productId(cartItem.getId())
                 .quantity(cartItem.getQuantity())
                 .build();
