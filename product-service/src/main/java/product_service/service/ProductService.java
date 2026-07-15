@@ -73,9 +73,13 @@ public class ProductService {
         return products;
     }
 
-    public ProductOutput getProduct(String productId) {
+    public ProductOutput getProduct(final String productId, final String userId) {
         Product product = this.productRepository.findById(productId)
                 .orElseThrow(() -> new NotFoundException("Whoops! product not found"));
+
+        if (product.getStatus().equals(ProductStatus.PENDING) && !product.getUserId().equals(userId)) {
+            throw new BadRequestException("Cannot get product with status pending");
+        }
 
         List<String> productFiles = this.mediaClient.getProductMedia(product.getId());
         return ProductMapper.toProductOutputDto(product, productFiles, null);

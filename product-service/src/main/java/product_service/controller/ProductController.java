@@ -52,8 +52,8 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ProductOutput get(@PathVariable("id") String productId) {
-        return this.productService.getProduct(productId);
+    public ProductOutput get(@PathVariable("id") String productId, @AuthenticationPrincipal String userId) {
+        return this.productService.getProduct(productId, userId);   
     }
 
     @PutMapping("/{id}")

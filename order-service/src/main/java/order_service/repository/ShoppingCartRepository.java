@@ -1,11 +1,13 @@
 package order_service.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.stereotype.Repository;
 
 import order_service.model.ShoppingCart;
 
-@Repository
 public interface ShoppingCartRepository extends MongoRepository<ShoppingCart, String> {
-    
+
+    Optional<ShoppingCart> findByUserId(final String userId);
+
 }
