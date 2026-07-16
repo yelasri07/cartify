@@ -1,5 +1,6 @@
 package order_service.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.NotNull;
@@ -15,11 +16,12 @@ public class CartDTO {
     }
 
     @Builder
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static record CartItemOutput(
             String id,
             @JsonProperty("shopping_cart_id") String shoppingCartId,
             @JsonProperty("product_id") String productId,
-            Integer quantity,
+            @JsonProperty("item_quantity") Integer quantity,
             ProductOutput product) {
     }
 

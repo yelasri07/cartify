@@ -7,12 +7,16 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import order_service.dto.CartDTO.CartItemInput;
 import order_service.dto.CartDTO.CartItemOutput;
 import order_service.dto.ProductDTO.ProductOutput;
+import order_service.exception.BadRequestException;
+import order_service.exception.NotFoundException;
+import order_service.mapper.CartItemMapper;
 import order_service.model.CartItem;
 import order_service.model.ShoppingCart;
 import order_service.repository.CartItemRepository;
@@ -27,7 +31,7 @@ public class CartService {
     private final CartItemRepository cartItemRepository;
     private final ProductClient productClient;
 
-    public Map<String, Object> createCartItem(final CartItemInput cartItemData, final String userId) {
+    public CartItemOutput createCartItem(final CartItemInput cartItemData, final String userId) {
         ProductOutput product = this.productClient.get(cartItemData.productId());
 
         // Create a shopping cart if not exists
@@ -54,12 +58,8 @@ public class CartService {
                     .build();
         }
 
-        this.cartItemRepository.save(cartItem);
-
-        return Map.of("message", "Item created successfully",
-                "shopping_cart_id", shoppingCart.getId(),
-                "product_id", cartItemData.productId(),
-                "quantity", cartItemData.quantity());
+        final CartItem savedItem = this.cartItemRepository.save(cartItem);
+        return CartItemMapper.toCartItemOutput(savedItem, null);
     }
 
     public List<CartItemOutput> getItems(final String userId) {
@@ -76,13 +76,37 @@ public class CartService {
         Map<String, ProductOutput> products = this.productClient.getProductsCarts(productIds)
                 .stream().collect(Collectors.toMap(ProductOutput::id, Function.identity()));
 
-        return cartItems.stream().map(item -> CartItemOutput.builder()
-                .id(item.getId())
-                .shoppingCartId(item.getShoppingCartId())
-                .productId(item.getProductId())
-                .quantity(item.getQuantity())
-                .product(products.get(item.getProductId()))
-                .build()).toList();
+        return cartItems.stream().map(item -> CartItemMapper.toCartItemOutput(item, products.get(item.getProductId())))
+                .toList();
+    }
+
+    public CartItemOutput updateItem(final String itemId, final CartItemInput cartItemData, final String userId) {
+        final CartItem cartItem = this.getMyItem(itemId, userId);
+        cartItem.setQuantity(cartItemData.quantity());
+        final CartItem item = this.cartItemRepository.save(cartItem);
+        return CartItemMapper.toCartItemOutput(item, null);
+    }
+
+    public Map<String, String> deleteItem(final String itemId, final String userId) {
+        final CartItem cartItem = this.getMyItem(itemId, userId);
+        this.cartItemRepository.delete(cartItem);
+        return Map.of(
+                "id", cartItem.getId(),
+                "message", "item deleted successfully.");
+    }
+
+    private CartItem getMyItem(final String itemId, final String userId) {
+        final CartItem cartItem = this.cartItemRepository.findById(itemId)
+                .orElseThrow(() -> new NotFoundException("Whoops! item not found."));
+
+        final ShoppingCart shoppingCart = this.shoppingCartRepository.findByUserId(userId)
+                .orElseThrow(() -> new NotFoundException("No shopping cart found."));
+
+        if (!shoppingCart.getId().equals(cartItem.getShoppingCartId())) {
+            throw new AccessDeniedException("Access denied");
+        }
+
+        return cartItem;
     }
 
 }
