@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthStateService } from '../../../core/services/auth-state.service';
 
@@ -13,6 +13,8 @@ export class HeaderComponent {
   authStateService = inject(AuthStateService);
   user = this.authStateService.currentUser;
   isAuthenticated = this.authStateService.isAuthenticated;
+
+  profileMenu = signal(false);
 
   logout() {
     this.authStateService.logout();
