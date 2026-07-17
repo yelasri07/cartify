@@ -22,7 +22,7 @@
               Home
             </span>
           </li>
-          <li class="relative">
+          <li class="relative" (click)="this.isVisibleShoppingCart.set(true)">
             <svg class="w-6 cursor-pointer" xmlns="http://www.w3.org/2000/svg" viewBox="-0.5 0 25 25" fill="none">
               <path
                 d="M18.5996 21.57C19.7042 21.57 20.5996 20.6746 20.5996 19.57C20.5996 18.4654 19.7042 17.57 18.5996 17.57C17.495 17.57 16.5996 18.4654 16.5996 19.57C16.5996 20.6746 17.495 21.57 18.5996 21.57Z"
@@ -110,3 +110,7 @@
 
   </div>
 </header>
+
+@if (isVisibleShoppingCart()) {
+<app-shopping-cart (closeCart)="closeCart()" />
+}

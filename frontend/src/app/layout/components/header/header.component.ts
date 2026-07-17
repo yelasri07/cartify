@@ -1,10 +1,11 @@
-import { Component, HostListener, inject, signal } from '@angular/core';
+import { Component, HostListener, inject, Output, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthStateService } from '../../../core/services/auth-state.service';
+import { ShoppingCartComponent } from "../../../shared/components/shopping-cart/shopping-cart.component";
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive, ShoppingCartComponent],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
@@ -15,6 +16,7 @@ export class HeaderComponent {
   isAuthenticated = this.authStateService.isAuthenticated;
 
   isVisibleMenu = signal(false);
+  isVisibleShoppingCart = signal(true);
 
   logout() {
     this.authStateService.logout();
@@ -29,5 +31,9 @@ export class HeaderComponent {
   @HostListener('document:click')
   closeMenu() {
     if (this.isVisibleMenu()) this.isVisibleMenu.set(false)
+  }
+
+  closeCart() {
+    this.isVisibleShoppingCart.set(false)
   }
 }
