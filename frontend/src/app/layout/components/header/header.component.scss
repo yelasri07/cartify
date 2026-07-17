@@ -22,26 +22,25 @@
     transition: .2s;
 }
 
-nav>a::after {
-    content: '';
-    width: 0;
-    height: 2px;
-    position: absolute;
-    background-color: var(--color-accent);
-    transition: .3s;
-    left: 50%;
-    bottom: -1px;
+nav ul svg:hover,
+nav ul svg:hover>path {
+    color: var(--color-accent);
+    stroke: var(--color-accent);
 }
 
-nav>a:hover::after {
-    content: '';
-    width: 100%;
-    left: 0;
+nav ul li:hover {
+    span {
+        display: block;
+    }
 }
 
-nav>a.active::after {
-    width: 100%;
-    left: 0;
+nav ul li.active {
+
+    svg,
+    svg>path {
+        color: var(--color-accent);
+        stroke: var(--color-accent);
+    }
 }
 
 .dropdown-profile-menu .options p {
