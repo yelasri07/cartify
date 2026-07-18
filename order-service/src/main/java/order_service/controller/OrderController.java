@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 import order_service.model.OrderDetails;
+import order_service.model.OrderItem;
 import order_service.service.OrderService;
 
 import org.springframework.web.bind.annotation.RequestParam;
@@ -48,14 +49,13 @@ public class OrderController {
     @GetMapping("/{id}")
     public OrderDetails getOrderById(@PathVariable String id, @AuthenticationPrincipal String currentUserId) {
         // TODO: fetch order + items, check ownership
-        System.out.println("##########");
         return orderService.getOrderById(id, currentUserId);
     }
 
     @GetMapping("/{id}/items")
-    public ResponseEntity<?> getOrderItems(@PathVariable String id) {
+    public List<OrderItem> getOrderItems(@PathVariable String id, @AuthenticationPrincipal String currentUserId) {
         // TODO: fetch order_items for this order
-        return null;
+        return orderService.getOrderItems(id, currentUserId);
     }
 
     @PutMapping("/{id}/cancel")

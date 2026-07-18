@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException.Forbidden;
 
-import jakarta.ws.rs.ForbiddenException;
 import lombok.RequiredArgsConstructor;
 import order_service.exception.NotFoundException;
 import order_service.model.CartItem;
@@ -41,10 +41,10 @@ public class OrderService {
         OrderDetails savedOrder = orderDetailsRepository.save(orderDetails);
 
         List<OrderItem> orderItems = cartItemRepository.findAllByshoppingCartId(shoppingCart.getId())
-                .stream().map(item->cartItemToOrderItem(item, savedOrder.getId())).toList();
+                .stream().map(item -> cartItemToOrderItem(item, savedOrder.getId())).toList();
 
         orderItemsRepository.saveAll(orderItems);
-        
+
         Map<String, Object> response = new HashMap<>();
         response.put("order_details", savedOrder);
 
@@ -56,11 +56,25 @@ public class OrderService {
     }
 
     public OrderDetails getOrderById(String orderId, String currentUserID) {
-        OrderDetails orderDetails = orderDetailsRepository.findById(orderId).orElseThrow(()->new NotFoundException("Whoops! order cart not found."));
-        // if (orderDetails.getUserId() != currentUserID){
-        //         throw new ForbiddenException("Not owner of order");
-        // }
+        OrderDetails orderDetails = orderDetailsRepository.findById(orderId)
+                .orElseThrow(() -> new NotFoundException("Whoops! order  not found."));
+        if (orderDetails.getUserId() != currentUserID) {
+            throw new NotFoundException("Whoops! order not found for you.");
+        }
+        System.out.println(currentUserID);
+        System.out.println(orderDetails.getUserId());
         return orderDetails;
+    }
+
+    public List<OrderItem> getOrderItems(String orderId, String currentUserID) {
+        OrderDetails orderDetails = orderDetailsRepository.findById(orderId)
+                .orElseThrow(() -> new NotFoundException("Whoops! order  not found."));
+        if (orderDetails.getUserId() != currentUserID) {
+            throw new NotFoundException("Whoops! order not found for you.");
+        }
+        System.out.println(currentUserID);
+        System.out.println(orderDetails.getUserId());
+        return orderItemsRepository.findAllByOrderId(orderId);
     }
 
     public OrderItem cartItemToOrderItem(CartItem cartItem, String orderId) {
