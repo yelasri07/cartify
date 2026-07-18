@@ -10,7 +10,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException.Forbidden;
 
+import jakarta.ws.rs.BadRequestException;
 import lombok.RequiredArgsConstructor;
+import order_service.dto.ProductDTO.ProductOutput;
 import order_service.exception.NotFoundException;
 import order_service.model.CartItem;
 import order_service.model.OrderDetails;
@@ -20,6 +22,7 @@ import order_service.repository.CartItemRepository;
 import order_service.repository.OrderDetailsRepository;
 import order_service.repository.OrderItemRepository;
 import order_service.repository.ShoppingCartRepository;
+import order_service.restApi.ProductClient;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +34,11 @@ public class OrderService {
     private final OrderDetailsRepository orderDetailsRepository;
     private final OrderItemRepository orderItemsRepository;
 
+    private final ProductClient productClient;
+
     public Map<String, Object> createOrder(String currentUserId) {
+
+        // ProductOutput product = this.productClient.get(cartItemData.productId());
 
         ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(currentUserId)
                 .orElseThrow(() -> new NotFoundException("Whoops! shopping cart not found."));
@@ -44,7 +51,17 @@ public class OrderService {
         OrderDetails savedOrder = orderDetailsRepository.save(orderDetails);
 
         List<OrderItem> orderItems = cartItemRepository.findByShoppingCartId(shoppingCart.getId())
-                .stream().map(item -> cartItemToOrderItem(item, savedOrder.getId())).toList();
+                .stream()
+                .map(
+                        item -> {
+                            ProductOutput product = this.productClient.get(item.getProductId());
+                            if (product.quantity() < item.getQuantity()){
+                                throw new BadRequestException("Not enough available quantity.");
+                            }
+                            return cartItemToOrderItem(item, savedOrder.getId(), product.price());
+                        }
+                    )
+                .toList();
 
         orderItemsRepository.saveAll(orderItems);
 
@@ -56,7 +73,6 @@ public class OrderService {
 
     public List<OrderDetails> getMyOrders(int page, int size, String currentUserID) {
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "id");
-
 
         return orderDetailsRepository.findAllByUserId(currentUserID, pageable);
     }
@@ -83,11 +99,12 @@ public class OrderService {
         return orderItemsRepository.findAllByOrderId(orderId);
     }
 
-    public OrderItem cartItemToOrderItem(CartItem cartItem, String orderId) {
+    public OrderItem cartItemToOrderItem(CartItem cartItem, String orderId, double price) {
         return OrderItem.builder()
                 .orderId(orderId)
                 .productId(cartItem.getId())
                 .quantity(cartItem.getQuantity())
+                .checkoutPrice(price)
                 .build();
 
     }
