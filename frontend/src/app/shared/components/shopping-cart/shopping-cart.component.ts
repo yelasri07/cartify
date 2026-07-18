@@ -1,6 +1,8 @@
-import { Component, EventEmitter, inject, OnDestroy, OnInit, Output, signal } from '@angular/core';
+import { Component, computed, EventEmitter, inject, OnDestroy, OnInit, Output, signal } from '@angular/core';
 import { ShoppingCartService } from '../../../core/services/shopping-cart.service';
 import { CartItem } from '../../../core/interfaces/cart-item.interface';
+import { PopupService } from '../../../core/services/popup.service';
+import { Confirmable } from '../../decorators/confirmable.decorator';
 
 @Component({
   selector: 'app-shopping-cart',
@@ -13,12 +15,24 @@ export class ShoppingCartComponent implements OnInit, OnDestroy {
   closeCart = new EventEmitter()
 
   private shoppingCartService = inject(ShoppingCartService)
+  private popup = inject(PopupService)
+
   items = signal<CartItem[]>([]);
+
+  totalPrice = computed(() => {
+    let total = 0
+    this.items().forEach(item => {
+      total += item.product.price * item.item_quantity
+    })
+
+    return total
+  })
 
   ngOnInit(): void {
     document.body.classList.add('overflow-hidden');
     this.shoppingCartService.fetchItems().subscribe(res => {
       this.items.set(res)
+      // console.log(this.items());
     })
   }
 
@@ -41,9 +55,27 @@ export class ShoppingCartComponent implements OnInit, OnDestroy {
     this.shoppingCartService.updateItem(currentItem.id, currentItem.product_id, currentItem.item_quantity).subscribe()
   }
 
+  @Confirmable()
   deleteItem(itemId: string) {
     this.shoppingCartService.submitDelete(itemId).subscribe()
     this.items.set(this.items().filter(item => item.id != itemId))
+  }
+
+  checkout() {
+    this.shoppingCartService.submitCheckout().subscribe({
+      next: res => {
+        this.popup.showSuccess("Checkout done successfully.")
+        this.closeCart.emit()
+      },
+      error: err => {
+        if (err.status == 400) {
+          this.shoppingCartService.fetchItems().subscribe(res => {
+            this.items.set(res)
+          })
+        }
+        throw err
+      }
+    })
   }
 
   itemImage(item: CartItem) {

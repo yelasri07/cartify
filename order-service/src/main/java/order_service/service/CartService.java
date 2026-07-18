@@ -58,6 +58,9 @@ public class CartService {
                     .build();
         }
 
+        if (cartItem.getQuantity() > product.quantity())
+            throw new BadRequestException("The quantity has reached the maximum.");
+
         final CartItem savedItem = this.cartItemRepository.save(cartItem);
         return CartItemMapper.toCartItemOutput(savedItem, null);
     }

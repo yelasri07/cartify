@@ -11,7 +11,9 @@ export const API = {
     CREATE_MEDIA: `${URL}/api/media`,
     DELETE_PRODUCT: `${URL}/api/products`,
     UPDATE_PRODUCT: `${URL}/api/products`,
+    CREATE_ITEM: `${URL}/api/carts`,
     GET_ITEMS: `${URL}/api/carts`,
     UPDATE_ITEM: `${URL}/api/carts`,
     DELETE_ITEM: `${URL}/api/carts`,
+    CREATE_ORDER: `${URL}/api/orders`,
 }
