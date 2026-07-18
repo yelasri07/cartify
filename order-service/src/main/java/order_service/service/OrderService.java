@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException.Forbidden;
 
@@ -40,7 +43,7 @@ public class OrderService {
                 .build();
         OrderDetails savedOrder = orderDetailsRepository.save(orderDetails);
 
-        List<OrderItem> orderItems = cartItemRepository.findAllByshoppingCartId(shoppingCart.getId())
+        List<OrderItem> orderItems = cartItemRepository.findByShoppingCartId(shoppingCart.getId())
                 .stream().map(item -> cartItemToOrderItem(item, savedOrder.getId())).toList();
 
         orderItemsRepository.saveAll(orderItems);
@@ -51,8 +54,11 @@ public class OrderService {
         return response;
     }
 
-    public List<OrderDetails> getMyOrders(String currentUserID) {
-        return orderDetailsRepository.findAllByUserId(currentUserID);
+    public List<OrderDetails> getMyOrders(int page, int size, String currentUserID) {
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "id");
+
+
+        return orderDetailsRepository.findAllByUserId(currentUserID, pageable);
     }
 
     public OrderDetails getOrderById(String orderId, String currentUserID) {

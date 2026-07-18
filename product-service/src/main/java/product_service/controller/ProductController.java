@@ -2,6 +2,7 @@ package product_service.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -53,7 +54,7 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ProductOutput get(@PathVariable("id") String productId, @AuthenticationPrincipal String userId) {
-        return this.productService.getProduct(productId, userId);   
+        return this.productService.getProduct(productId, userId);
     }
 
     @PutMapping("/{id}")
@@ -65,6 +66,11 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public Map<String, String> delete(@PathVariable("id") String productId, @AuthenticationPrincipal String userId) {
         return this.productService.deleteProduct(productId, userId);
+    }
+
+    @PostMapping("/carts")
+    public List<ProductOutput> getProductsCarts(@RequestBody Set<String> productIds) {
+        return this.productService.getProductsCarts(productIds);
     }
 
 }
