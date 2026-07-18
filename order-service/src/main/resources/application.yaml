@@ -5,6 +5,15 @@ spring:
   mongodb:
     uri: ${MONGO_URL:mongodb://buy01:buy01@localhost:27020/buy01?authSource=admin}
 
+  kafka:
+    bootstrap-servers: ${BROKER_URL:localhost:9092}
+
+    # producer:
+    #   key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    #   value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      group-id: productGroup
+
 server:
   port: 8084
   servlet:
