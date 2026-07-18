@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, OnDestroy, OnInit, Output, signal } from '@angular/core';
+import { Component, computed, EventEmitter, inject, OnDestroy, OnInit, Output, signal } from '@angular/core';
 import { ShoppingCartService } from '../../../core/services/shopping-cart.service';
 import { CartItem } from '../../../core/interfaces/cart-item.interface';
 
@@ -15,10 +15,20 @@ export class ShoppingCartComponent implements OnInit, OnDestroy {
   private shoppingCartService = inject(ShoppingCartService)
   items = signal<CartItem[]>([]);
 
+  totalPrice = computed(() => {
+    let total = 0
+    this.items().forEach(item => {
+      total += item.product.price * item.item_quantity
+    })
+
+    return total
+  })
+
   ngOnInit(): void {
     document.body.classList.add('overflow-hidden');
     this.shoppingCartService.fetchItems().subscribe(res => {
       this.items.set(res)
+      // console.log(this.items());
     })
   }
 
