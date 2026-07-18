@@ -38,10 +38,10 @@ export class ProfileComponent implements OnInit {
 
       this.authStateService.fetchUserProfile(userId).subscribe({
         next: res => {
-          if (res.user_details.role.toString() == userRole[userRole.CLIENT]) {
-            this.profileError.set("Whoops! profile not found.")
-            return;
-          }
+          // if (res.user_details.role.toString() == userRole[userRole.CLIENT]) {
+          //   this.profileError.set("Whoops! profile not found.")
+          //   return;
+          // }
 
           this.profileError.set("")
           this.userProfile.set(res.user_details)
