@@ -24,4 +24,8 @@ export class ShoppingCartService {
   submitDelete(itemId: string) {
     return this.http.delete(API.DELETE_ITEM + `/${itemId}`)
   }
-}
+
+  submitCheckout() {
+    return this.http.post(API.CREATE_ORDER, {})
+  }
+} 

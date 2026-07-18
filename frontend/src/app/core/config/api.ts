@@ -15,4 +15,5 @@ export const API = {
     GET_ITEMS: `${URL}/api/carts`,
     UPDATE_ITEM: `${URL}/api/carts`,
     DELETE_ITEM: `${URL}/api/carts`,
+    CREATE_ORDER: `${URL}/api/orders`,
 }
