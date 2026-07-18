@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, OnInit, Output, signal } from '@angular/core';
+import { Component, EventEmitter, inject, OnDestroy, OnInit, Output, signal } from '@angular/core';
 import { ShoppingCartService } from '../../../core/services/shopping-cart.service';
 import { CartItem } from '../../../core/interfaces/cart-item.interface';
 
@@ -8,7 +8,7 @@ import { CartItem } from '../../../core/interfaces/cart-item.interface';
   templateUrl: './shopping-cart.component.html',
   styleUrl: './shopping-cart.component.scss',
 })
-export class ShoppingCartComponent implements OnInit {
+export class ShoppingCartComponent implements OnInit, OnDestroy {
   @Output()
   closeCart = new EventEmitter()
 
@@ -16,10 +16,14 @@ export class ShoppingCartComponent implements OnInit {
   items = signal<CartItem[]>([]);
 
   ngOnInit(): void {
+    document.body.classList.add('overflow-hidden');
     this.shoppingCartService.fetchItems().subscribe(res => {
       this.items.set(res)
-      console.log(this.items());
     })
+  }
+
+  ngOnDestroy(): void {
+    document.body.classList.remove('overflow-hidden');
   }
 
   updateItem(currentItem: CartItem, increment: boolean) {
@@ -35,6 +39,11 @@ export class ShoppingCartComponent implements OnInit {
     }))
 
     this.shoppingCartService.updateItem(currentItem.id, currentItem.product_id, currentItem.item_quantity).subscribe()
+  }
+
+  deleteItem(itemId: string) {
+    this.shoppingCartService.submitDelete(itemId).subscribe()
+    this.items.set(this.items().filter(item => item.id != itemId))
   }
 
   itemImage(item: CartItem) {

@@ -16,4 +16,8 @@ export class ShoppingCartService {
   updateItem(itemId: string, productId: string, quantity: number) {
     return this.http.put(API.UPDATE_ITEM + "/" + itemId, { product_id: productId, quantity })
   }
+
+  submitDelete(itemId: string) {
+    return this.http.delete(API.DELETE_ITEM + `/${itemId}`)
+  }
 }

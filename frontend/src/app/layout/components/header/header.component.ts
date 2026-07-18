@@ -16,7 +16,7 @@ export class HeaderComponent {
   isAuthenticated = this.authStateService.isAuthenticated;
 
   isVisibleMenu = signal(false);
-  isVisibleShoppingCart = signal(true);
+  isVisibleShoppingCart = signal(false);
 
   logout() {
     this.authStateService.logout();

@@ -1,6 +1,6 @@
 <section class="fixed top-0 bg-gray-900/50 right-0 h-screen w-full z-100" (click)="closeCart.emit()">
-    <!-- animate.enter="enter-animation" -->
-    <div class="shopping-cart bg-primary fixed right-0 h-full" (click)="$event.stopPropagation()">
+    <div animate.enter="enter-animation" class="shopping-cart bg-primary fixed right-0 h-full flex flex-col overflow-auto"
+        (click)="$event.stopPropagation()">
         <div class="relative">
             <span (click)="closeCart.emit()"
                 class="absolute right-5 top-5 text-2xl font-semibold cursor-pointer hover:text-accent">X</span>
@@ -9,9 +9,10 @@
         <div class="cart-header text-center mt-10">
             <h3 class="text-2xl font-semibold">Shopping cart</h3>
         </div>
-        <div class="cart-body p-5 mt-15">
-            <div class="items flex flex-col gap-7">
+        <div class="cart-body p-5 mt-10 flex-1 flex flex-col gap-10 justify-between">
+            <div class="items flex flex-col gap-6">
                 @for (item of items(); track item.id) {
+                <div class="w-full h-px bg-accent opacity-30"></div>
                 <div class="item flex gap-5">
                     <div class="images w-35 h-35 shrink-0 rounded-md overflow-hidden bg-gray-300">
                         <img class="w-full h-full object-cover" [src]="itemImage(item)">
@@ -38,11 +39,20 @@
                                             d="M352 128C352 110.3 337.7 96 320 96C302.3 96 288 110.3 288 128L288 288L128 288C110.3 288 96 302.3 96 320C96 337.7 110.3 352 128 352L288 352L288 512C288 529.7 302.3 544 320 544C337.7 544 352 529.7 352 512L352 352L512 352C529.7 352 544 337.7 544 320C544 302.3 529.7 288 512 288L352 288L352 128z" />
                                     </svg></button>
                             </div>
-                            <button class="underline cursor-pointer text-red-600">Remove</button>
+                            <button (click)="deleteItem(item.id)"
+                                class="underline cursor-pointer text-red-600">Remove</button>
                         </div>
                     </div>
                 </div>
                 }
+            </div>
+            <div class="cart-footer">
+                <p class="bg-secondary py-3 px-6 flex justify-between font-semibold rounded-md"><span>Total: </span>
+                    <span>$84.56</span>
+                </p>
+                <button
+                    class="bg-dark text-primary w-full py-3 px-6 my-2 cursor-pointer rounded-md hover:bg-accent transition duration-200">Check
+                    Out</button>
             </div>
         </div>
     </div>
