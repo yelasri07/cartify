@@ -15,7 +15,7 @@
         </h2>
 
         <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-5">
-            <input maxlength="100" formControlName="name" type="text" placeholder="Name..."
+            <input maxlength="30" formControlName="name" type="text" placeholder="Name..."
                 class="w-full px-4 py-3 rounded-lg border border-secondary bg-primary text-dark placeholder-accent focus:outline-none focus:ring-2 focus:ring-accent transition" />
             <span class="text-red-500 -my-3">
                 @if (name.hasError('required')) {

@@ -1,0 +1,55 @@
+import { Component, EventEmitter, inject, OnDestroy, OnInit, Output, signal } from '@angular/core';
+import { ShoppingCartService } from '../../../core/services/shopping-cart.service';
+import { CartItem } from '../../../core/interfaces/cart-item.interface';
+
+@Component({
+  selector: 'app-shopping-cart',
+  imports: [],
+  templateUrl: './shopping-cart.component.html',
+  styleUrl: './shopping-cart.component.scss',
+})
+export class ShoppingCartComponent implements OnInit, OnDestroy {
+  @Output()
+  closeCart = new EventEmitter()
+
+  private shoppingCartService = inject(ShoppingCartService)
+  items = signal<CartItem[]>([]);
+
+  ngOnInit(): void {
+    document.body.classList.add('overflow-hidden');
+    this.shoppingCartService.fetchItems().subscribe(res => {
+      this.items.set(res)
+    })
+  }
+
+  ngOnDestroy(): void {
+    document.body.classList.remove('overflow-hidden');
+  }
+
+  updateItem(currentItem: CartItem, increment: boolean) {
+    this.items.set(this.items().map(item => {
+      if (currentItem.id != item.id) return item
+
+      if (increment) {
+        item.item_quantity++
+      } else {
+        item.item_quantity--
+      }
+      return item
+    }))
+
+    this.shoppingCartService.updateItem(currentItem.id, currentItem.product_id, currentItem.item_quantity).subscribe()
+  }
+
+  deleteItem(itemId: string) {
+    this.shoppingCartService.submitDelete(itemId).subscribe()
+    this.items.set(this.items().filter(item => item.id != itemId))
+  }
+
+  itemImage(item: CartItem) {
+    const files = item.product.files;
+    return files && files.length > 0
+      ? files[0]
+      : `https://placehold.co/600x400/222222/FFFFFF?text=${encodeURIComponent(item.product.name)}`;
+  }
+}

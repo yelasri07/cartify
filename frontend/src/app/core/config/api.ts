@@ -1,4 +1,5 @@
-const URL = ""
+const URL = "http://localhost:8080"
+// const URL = ""
 export const API = {
     ME: `${URL}/api/users/me`,
     REGISTER: `${URL}/api/auth/register`,
@@ -9,5 +10,8 @@ export const API = {
     CREATE_PRODUCT: `${URL}/api/products`,
     CREATE_MEDIA: `${URL}/api/media`,
     DELETE_PRODUCT: `${URL}/api/products`,
-    UPDATE_PRODUCT: `${URL}/api/products`
+    UPDATE_PRODUCT: `${URL}/api/products`,
+    GET_ITEMS: `${URL}/api/carts`,
+    UPDATE_ITEM: `${URL}/api/carts`,
+    DELETE_ITEM: `${URL}/api/carts`,
 }

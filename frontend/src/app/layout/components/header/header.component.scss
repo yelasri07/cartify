@@ -5,24 +5,53 @@
     background-color: var(--color-accent);
 }
 
-nav>a::after {
+.profile::before {
     content: '';
-    width: 0;
-    height: 2px;
-    position: absolute;
+    width: 2px;
+    opacity: .5;
+    height: 30px;
     background-color: var(--color-accent);
-    transition: .3s;
-    left: 50%;
-    bottom: -1px;
 }
 
-nav>a:hover::after {
-    content: '';
-    width: 100%;
-    left: 0;
+.profile {
+    transition: .2s;
 }
 
-nav > a.active::after {
-    width: 100%;
-    left: 0;
+.profile:hover {
+    background-color: var(--color-secondary);
+    transition: .2s;
+}
+
+nav ul svg:hover,
+nav ul svg:hover>path {
+    color: var(--color-accent);
+    stroke: var(--color-accent);
+}
+
+nav ul li:hover {
+    span {
+        display: block;
+    }
+}
+
+nav ul li.active {
+
+    svg,
+    svg>path {
+        color: var(--color-accent);
+        stroke: var(--color-accent);
+    }
+}
+
+.dropdown-profile-menu .options p {
+    padding: 10px;
+    border-radius: 8px;
+    font-size: .9em;
+    transition: .2s;
+
+    &:hover {
+        background-color: var(--color-secondary);
+        font-weight: 600;
+        transition: .2s;
+    }
 }

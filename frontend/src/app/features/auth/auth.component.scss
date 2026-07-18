@@ -17,3 +17,10 @@
         }
     }
 }
+
+.logo::before {
+    content: '';
+    width: 4px;
+    height: 40px;
+    background-color: var(--color-accent);
+}
