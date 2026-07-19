@@ -21,11 +21,13 @@ export class ProductService {
   readonly isFirstPage = computed(() => this._page() === 0);
   readonly isLastPage = computed(() => this._products().length < this.pageSize);
 
-  loadProducts(userId?: string) {
+  loadProducts(userId?: string, searchValue?: string, sortedBy?: string) {
     this._loading.set(true);
     const params = new HttpParams()
       .set('page', this._page().toString())
-      .set('size', this.pageSize.toString());
+      .set('size', this.pageSize.toString())
+      .set('search', searchValue ? searchValue : "")
+      .set('sortedBy', sortedBy ? sortedBy : "id")
 
     this.http.get<Product[]>(!userId ? API.GET_POSTS : `${API.GET_PROFILE_POSTS}/${userId}`, { params }).subscribe({
       next: (products) => {
