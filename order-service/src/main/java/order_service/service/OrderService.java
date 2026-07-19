@@ -11,11 +11,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import lombok.RequiredArgsConstructor;
 import order_service.dto.OrderDTO.SoldProductOutput;
 import order_service.dto.ProductDTO.ProductOutput;
 import order_service.exception.BadRequestException;
 import order_service.exception.NotFoundException;
+import order_service.kafka.ItemEvent;
+import order_service.kafka.OrderProducer;
 import order_service.model.CartItem;
 import order_service.model.OrderDetails;
 import order_service.model.OrderItem;
@@ -38,8 +42,10 @@ public class OrderService {
     private final OrderItemRepository orderItemsRepository;
 
     private final ProductClient productClient;
+    private final OrderProducer orderProducer;
+    private final ObjectMapper objectMapper;
 
-    public Map<String, Object> createOrder(String currentUserId) {
+    public Map<String, Object> createOrder(String currentUserId) throws Exception {
         ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(currentUserId)
                 .orElseThrow(() -> new NotFoundException("Whoops! shopping cart not found."));
 
@@ -65,9 +71,16 @@ public class OrderService {
         shoppingCartRepository.delete(shoppingCart);
         cartItemRepository.deleteAll(cartItems);
 
+        ItemEvent itemEvent = ItemEvent.builder()
+                .isIncrement(false)
+                .items(orderItems.stream().collect(Collectors.toMap(OrderItem::getProductId, OrderItem::getQuantity)))
+                .build();
+
+        this.orderProducer.sendMessage("update-quantity",
+                objectMapper.writeValueAsString(itemEvent));
+
         Map<String, Object> response = new HashMap<>();
         response.put("order_details", savedOrder);
-
         return response;
     }
 
