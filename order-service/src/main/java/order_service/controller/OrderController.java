@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
-import order_service.kafka.OrderProducer;
 import order_service.model.OrderDetails;
 import order_service.model.OrderItem;
 import order_service.service.OrderService;
@@ -28,18 +27,11 @@ import order_service.service.OrderService;
 public class OrderController {
 
     private final OrderService orderService;
-    private final OrderProducer orderProducer;
-
-    @GetMapping("/kafka")
-    public void kafka() {
-        this.orderProducer.sendMessage("kafka-topic", "hello wold");
-    }
-
     // ---------- Checkout ----------
 
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
-    public Map<String, Object> createOrder(@AuthenticationPrincipal String currentUserId) {
+    public Map<String, Object> createOrder(@AuthenticationPrincipal String currentUserId) throws Exception {
         return orderService.createOrder(currentUserId);
     }
 

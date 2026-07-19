@@ -11,7 +11,6 @@ public class OrderProducer {
     private final KafkaTemplate<String, String> kafkaTemplate;
 
     public void sendMessage(String topic, String message) {
-        System.out.println("aaaaaaaaaaaaaaaaa");
         kafkaTemplate.send(topic, message);
     }
 }
