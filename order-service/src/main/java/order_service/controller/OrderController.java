@@ -27,12 +27,11 @@ import order_service.service.OrderService;
 public class OrderController {
 
     private final OrderService orderService;
-
     // ---------- Checkout ----------
 
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
-    public Map<String, Object> createOrder(@AuthenticationPrincipal String currentUserId) {
+    public Map<String, Object> createOrder(@AuthenticationPrincipal String currentUserId) throws Exception {
         return orderService.createOrder(currentUserId);
     }
 
