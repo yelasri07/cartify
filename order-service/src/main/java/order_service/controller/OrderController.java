@@ -58,15 +58,13 @@ public class OrderController {
     }
 
     @PutMapping("/{id}/cancel")
-    public ResponseEntity<?> cancelOrder(@PathVariable String id) {
-        // TODO: cancel order if status allows it
-        return null;
+    public OrderDetails cancelOrder(@PathVariable String id) {
+        return orderService.cancelOrder(id);
     }
 
     @PostMapping("/{id}/redo")
-    public ResponseEntity<?> redoOrder(@PathVariable String id) {
-        // TODO: create new order using old order's items
-        return null;
+    public OrderDetails redoOrder(@PathVariable String id) {
+        return orderService.redoOrder(id);
     }
 
     // ---------- Seller-facing ----------

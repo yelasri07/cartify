@@ -21,5 +21,5 @@ public class OrderDetails extends Auditable {
     @Field(name = "total")
     private Double total;
     @Field(name = "status")
-    private String status;
+    private OrderStatus status;
 }

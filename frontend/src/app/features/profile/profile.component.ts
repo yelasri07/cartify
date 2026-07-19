@@ -5,13 +5,14 @@ import { User, userRole } from '../../core/interfaces/user.interface';
 import { ProductListComponent } from "../home/components/product-list/product-list.component";
 import { PaginatorComponent } from "../home/components/paginator/paginator.component";
 import { CreateProductComponent } from "../../shared/components/create-product/create-product.component";
+import { OrderListComponent } from "./components/order-list/order-list.component";
 import { PopupService } from '../../core/services/popup.service';
 import { MediaService } from '../../core/services/media.service';
 import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
-  imports: [ProductListComponent, PaginatorComponent, CreateProductComponent, RouterLink],
+  imports: [ProductListComponent, PaginatorComponent, CreateProductComponent, RouterLink, OrderListComponent],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
