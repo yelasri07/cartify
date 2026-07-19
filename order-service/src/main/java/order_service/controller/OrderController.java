@@ -70,9 +70,10 @@ public class OrderController {
     // ---------- Seller-facing ----------
 
     @GetMapping("/seller")
-    public ResponseEntity<?> getSellerOrders(@RequestParam(required = false) String status) {
-        // TODO: list orders containing this seller's products
-        return null;
+    public List<order_service.dto.OrderDTO.SoldProductOutput> getSellerOrders(
+            @AuthenticationPrincipal String currentUserId,
+            @RequestParam(required = false) String status) {
+        return orderService.getSellerOrders(currentUserId, status);
     }
 
     @PutMapping("/{id}/status")

@@ -33,6 +33,13 @@ export class OrderListComponent implements OnInit, OnDestroy {
     return this.allOrders().filter(o => o.status === 'CANCELLED' || o.status === 'CANCELED' || o.status === 'FAILED').length;
   });
 
+  // Client-side analytics: Total spent by client (active orders only)
+  totalSpent = computed(() => {
+    return this.allOrders()
+      .filter(o => o.status !== 'CANCELLED' && o.status !== 'CANCELED' && o.status !== 'FAILED')
+      .reduce((sum, o) => sum + o.total, 0);
+  });
+
   // Client-side computed filtered orders
   filteredOrders = computed(() => {
     const orders = this.allOrders();

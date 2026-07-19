@@ -6,13 +6,14 @@ import { ProductListComponent } from "../home/components/product-list/product-li
 import { PaginatorComponent } from "../home/components/paginator/paginator.component";
 import { CreateProductComponent } from "../../shared/components/create-product/create-product.component";
 import { OrderListComponent } from "./components/order-list/order-list.component";
+import { SellerSoldListComponent } from "./components/seller-sold-list/seller-sold-list.component";
 import { PopupService } from '../../core/services/popup.service';
 import { MediaService } from '../../core/services/media.service';
 import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
-  imports: [ProductListComponent, PaginatorComponent, CreateProductComponent, RouterLink, OrderListComponent],
+  imports: [ProductListComponent, PaginatorComponent, CreateProductComponent, RouterLink, OrderListComponent, SellerSoldListComponent],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
@@ -27,6 +28,8 @@ export class ProfileComponent implements OnInit {
   profileError = signal("");
   isCreateProductVisible = signal(false)
   isProfileImageUpdating = signal(false)
+  
+  sellerTab = signal<'PRODUCTS' | 'SOLD'>('PRODUCTS');
 
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe(params => {

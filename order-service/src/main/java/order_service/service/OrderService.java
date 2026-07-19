@@ -1,8 +1,10 @@
 package order_service.service;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import order_service.dto.OrderDTO.SoldProductOutput;
 import order_service.dto.ProductDTO.ProductOutput;
 import order_service.exception.BadRequestException;
 import order_service.exception.NotFoundException;
@@ -111,10 +114,69 @@ public class OrderService {
 
     }
 
+    public List<SoldProductOutput> getSellerOrders(String currentUserId, String status) {
+        List<OrderDetails> orders = orderDetailsRepository.findAll();
+        if (status != null && !status.isEmpty()) {
+            orders = orders.stream()
+                    .filter(o -> o.getStatus() != null && o.getStatus().name().equalsIgnoreCase(status))
+                    .toList();
+        }
+
+        if (orders.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        java.util.Map<String, OrderDetails> orderMap = orders.stream()
+                .collect(Collectors.toMap(OrderDetails::getId, o -> o));
+
+        List<OrderItem> orderItems = orderItemsRepository.findAll().stream()
+                .filter(item -> orderMap.containsKey(item.getOrderId()))
+                .toList();
+
+        if (orderItems.isEmpty()) {
+            return java.util.Collections.emptyList();
+        }
+
+        java.util.Set<String> productIds = orderItems.stream()
+                .map(OrderItem::getProductId)
+                .collect(java.util.stream.Collectors.toSet());
+
+        List<ProductOutput> products = productClient.getProductsCarts(productIds);
+
+        java.util.Map<String, ProductOutput> sellerProductsMap = products.stream()
+                .filter(p -> p.userId() != null && p.userId().equals(currentUserId))
+                .collect(java.util.stream.Collectors.toMap(ProductOutput::id, p -> p));
+
+        List<order_service.dto.OrderDTO.SoldProductOutput> result = new java.util.ArrayList<>();
+        for (OrderItem item : orderItems) {
+            if (sellerProductsMap.containsKey(item.getProductId())) {
+                ProductOutput product = sellerProductsMap.get(item.getProductId());
+                OrderDetails order = orderMap.get(item.getOrderId());
+
+                result.add(order_service.dto.OrderDTO.SoldProductOutput.builder()
+                        .orderId(order.getId())
+                        .orderStatus(order.getStatus().name())
+                        .productId(product.id())
+                        .productName(product.name())
+                        .quantity(item.getQuantity())
+                        .price(item.getCheckoutPrice())
+                        .createdAt(order.getCreatedAt())
+                        .build());
+            }
+        }
+
+        result.sort((a, b) -> {
+            if (a.createdAt() == null || b.createdAt() == null) return 0;
+            return b.createdAt().compareTo(a.createdAt());
+        });
+
+        return result;
+    }
+
     public OrderItem cartItemToOrderItem(CartItem cartItem, String orderId, double price) {
         return OrderItem.builder()
                 .orderId(orderId)
-                .productId(cartItem.getId())
+                .productId(cartItem.getProductId())
                 .quantity(cartItem.getQuantity())
                 .checkoutPrice(price)
                 .build();

@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Order } from '../interfaces/order.interface';
 import { OrderItem } from '../interfaces/order-item.interface';
 import { Product } from '../interfaces/product.interface';
+import { SoldProduct } from '../interfaces/sold-product.interface';
 import { API } from '../config/api';
 
 @Injectable({
@@ -35,5 +36,13 @@ export class OrderService {
   getProductsBatch(productIds: string[]) {
     const url = API.GET_ORDERS.replace('/orders', '/products/carts');
     return this.http.post<Product[]>(url, productIds);
+  }
+
+  getSellerOrders(status?: string) {
+    let params = new HttpParams();
+    if (status) {
+      params = params.set('status', status);
+    }
+    return this.http.get<SoldProduct[]>(`${API.GET_ORDERS}/seller`, { params });
   }
 }
