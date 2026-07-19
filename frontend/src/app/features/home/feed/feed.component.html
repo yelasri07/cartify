@@ -1,5 +1,9 @@
 <div class="container mx-auto py-2 justify-center ">
   <!-- <p class="text-center text-2xl">Product List:</p> -->
+  <!-- Search -->
+  <div class="searchtext text-center my-10">
+    <input (input)="search()" type="search" placeholder="Search for products..." class="border border-secondary py-3 px-6 rounded-lg w-100">
+  </div>
   <app-product-list />
-  <app-paginator/>
+  <app-paginator />
 </div>
