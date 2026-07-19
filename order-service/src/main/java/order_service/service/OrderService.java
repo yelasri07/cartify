@@ -1,9 +1,11 @@
 package order_service.service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.PageRequest;
@@ -46,7 +48,6 @@ public class OrderService {
     private final OrderProducer orderProducer;
     private final ObjectMapper objectMapper;
 
-    @Transactional
     public Map<String, Object> createOrder(String currentUserId) throws Exception {
         ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(currentUserId)
                 .orElseThrow(() -> new NotFoundException("Whoops! shopping cart not found."));
@@ -58,37 +59,46 @@ public class OrderService {
                 .build();
 
         OrderDetails savedOrder = orderDetailsRepository.save(orderDetails);
+        try {
 
-        List<CartItem> cartItems = cartItemRepository.findByShoppingCartId(shoppingCart.getId());
-        List<OrderItem> orderItems = cartItems.stream().map(item -> {
-            ProductOutput product = this.productClient.get(item.getProductId());
-            if (product.quantity() < item.getQuantity()) {
-                throw new BadRequestException("Not enough available quantity.");
-            }
-            return cartItemToOrderItem(item, savedOrder.getId(), product.price());
-        }).toList();
+            List<CartItem> cartItems = cartItemRepository.findByShoppingCartId(shoppingCart.getId());
 
-        orderDetails.setTotal(orderItems.stream().mapToDouble(item -> {
-            return item.getCheckoutPrice() * item.getQuantity();
-        }).sum());
+            List<OrderItem> orderItems = cartItems.stream().map(item -> {
+                ProductOutput product = this.productClient.get(item.getProductId());
+                if (product.quantity() < item.getQuantity()) {
+                    throw new BadRequestException("Not enough available quantity.");
+                }
+                return cartItemToOrderItem(item, savedOrder.getId(), product.price());
+            }).toList();
 
-        orderDetailsRepository.save(orderDetails);
-        orderItemsRepository.saveAll(orderItems);
+            orderDetails.setTotal(orderItems.stream().mapToDouble(item -> {
+                return item.getCheckoutPrice() * item.getQuantity();
+            }).sum());
 
-        shoppingCartRepository.delete(shoppingCart);
-        cartItemRepository.deleteAll(cartItems);
+            orderDetailsRepository.save(orderDetails);
+            orderItemsRepository.saveAll(orderItems);
+            shoppingCartRepository.delete(shoppingCart);
+            cartItemRepository.deleteAll(cartItems);
 
-        ItemEvent itemEvent = ItemEvent.builder()
-                .isIncrement(false)
-                .items(orderItems.stream().collect(Collectors.toMap(OrderItem::getProductId, OrderItem::getQuantity)))
-                .build();
+            ItemEvent itemEvent = ItemEvent.builder()
+                    .isIncrement(false)
+                    .items(orderItems.stream()
+                            .collect(Collectors.toMap(OrderItem::getProductId, OrderItem::getQuantity)))
+                    .build();
 
-        this.orderProducer.sendMessage("update-quantity",
-                objectMapper.writeValueAsString(itemEvent));
+            this.orderProducer.sendMessage("update-quantity",
+                    objectMapper.writeValueAsString(itemEvent));
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("order_details", savedOrder);
-        return response;
+            Map<String, Object> response = new HashMap<>();
+            response.put("order_details", savedOrder);
+            return response;
+        } catch (Exception e) {
+            // manual rollback — undo what we already wrote
+            orderItemsRepository.deleteByOrderId(savedOrder.getId());
+            orderDetailsRepository.deleteById(savedOrder.getId());
+            throw e;
+        }
+
     }
 
     public List<OrderDetails> getMyOrders(int page, int size, String currentUserID) {
@@ -116,19 +126,45 @@ public class OrderService {
         return orderItemsRepository.findAllByOrderId(orderId);
     }
 
-    public OrderDetails cancelOrder(String orderId) {
+    public OrderDetails cancelOrder(String orderId) throws Exception {
         OrderDetails orderDetails = orderDetailsRepository.findById(orderId)
                 .orElseThrow(() -> new NotFoundException("Whoops! order  not found."));
         orderDetails.setStatus(OrderStatus.CANCELLED);
+
+        List<OrderItem> orderItems = orderItemsRepository.findAllByOrderId(orderId);
+
+        ItemEvent itemEvent = ItemEvent.builder()
+                .isIncrement(true)
+                .items(orderItems.stream().collect(Collectors.toMap(OrderItem::getProductId, OrderItem::getQuantity)))
+                .build();
+
+        this.orderProducer.sendMessage("update-quantity", objectMapper.writeValueAsString(itemEvent));
 
         return orderDetailsRepository.save(orderDetails);
 
     }
 
-    public OrderDetails redoOrder(String orderId) {
+    public OrderDetails redoOrder(String orderId) throws Exception {
         OrderDetails orderDetails = orderDetailsRepository.findById(orderId)
                 .orElseThrow(() -> new NotFoundException("Whoops! order  not found."));
         orderDetails.setStatus(OrderStatus.ORDERED);
+
+        List<OrderItem> orderItems = orderItemsRepository.findAllByOrderId(orderId);
+
+        orderItems.stream().map(item -> {
+            ProductOutput product = this.productClient.get(item.getProductId());
+            if (product.quantity() < item.getQuantity()) {
+                throw new BadRequestException("Not enough available quantity.");
+            }
+            return item;
+        }).toList();
+
+        ItemEvent itemEvent = ItemEvent.builder()
+                .isIncrement(false)
+                .items(orderItems.stream().collect(Collectors.toMap(OrderItem::getProductId, OrderItem::getQuantity)))
+                .build();
+
+        this.orderProducer.sendMessage("update-quantity", objectMapper.writeValueAsString(itemEvent));
 
         return orderDetailsRepository.save(orderDetails);
 
@@ -146,7 +182,7 @@ public class OrderService {
             return Collections.emptyList();
         }
 
-        java.util.Map<String, OrderDetails> orderMap = orders.stream()
+        Map<String, OrderDetails> orderMap = orders.stream()
                 .collect(Collectors.toMap(OrderDetails::getId, o -> o));
 
         List<OrderItem> orderItems = orderItemsRepository.findAll().stream()
@@ -154,26 +190,26 @@ public class OrderService {
                 .toList();
 
         if (orderItems.isEmpty()) {
-            return java.util.Collections.emptyList();
+            return Collections.emptyList();
         }
 
-        java.util.Set<String> productIds = orderItems.stream()
+        Set<String> productIds = orderItems.stream()
                 .map(OrderItem::getProductId)
-                .collect(java.util.stream.Collectors.toSet());
+                .collect(Collectors.toSet());
 
         List<ProductOutput> products = productClient.getProductsCarts(productIds);
 
-        java.util.Map<String, ProductOutput> sellerProductsMap = products.stream()
+        Map<String, ProductOutput> sellerProductsMap = products.stream()
                 .filter(p -> p.userId() != null && p.userId().equals(currentUserId))
-                .collect(java.util.stream.Collectors.toMap(ProductOutput::id, p -> p));
+                .collect(Collectors.toMap(ProductOutput::id, p -> p));
 
-        List<order_service.dto.OrderDTO.SoldProductOutput> result = new java.util.ArrayList<>();
+        List<SoldProductOutput> result = new ArrayList<>();
         for (OrderItem item : orderItems) {
             if (sellerProductsMap.containsKey(item.getProductId())) {
                 ProductOutput product = sellerProductsMap.get(item.getProductId());
                 OrderDetails order = orderMap.get(item.getOrderId());
 
-                result.add(order_service.dto.OrderDTO.SoldProductOutput.builder()
+                result.add(SoldProductOutput.builder()
                         .orderId(order.getId())
                         .orderStatus(order.getStatus().name())
                         .productId(product.id())
