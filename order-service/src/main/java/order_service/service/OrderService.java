@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -45,6 +46,7 @@ public class OrderService {
     private final OrderProducer orderProducer;
     private final ObjectMapper objectMapper;
 
+    @Transactional
     public Map<String, Object> createOrder(String currentUserId) throws Exception {
         ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(currentUserId)
                 .orElseThrow(() -> new NotFoundException("Whoops! shopping cart not found."));
@@ -66,6 +68,11 @@ public class OrderService {
             return cartItemToOrderItem(item, savedOrder.getId(), product.price());
         }).toList();
 
+        orderDetails.setTotal(orderItems.stream().mapToDouble(item -> {
+            return item.getCheckoutPrice() * item.getQuantity();
+        }).sum());
+
+        orderDetailsRepository.save(orderDetails);
         orderItemsRepository.saveAll(orderItems);
 
         shoppingCartRepository.delete(shoppingCart);
@@ -179,7 +186,8 @@ public class OrderService {
         }
 
         result.sort((a, b) -> {
-            if (a.createdAt() == null || b.createdAt() == null) return 0;
+            if (a.createdAt() == null || b.createdAt() == null)
+                return 0;
             return b.createdAt().compareTo(a.createdAt());
         });
 

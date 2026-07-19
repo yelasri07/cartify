@@ -68,11 +68,10 @@ export class ShoppingCartComponent implements OnInit, OnDestroy {
         this.closeCart.emit()
       },
       error: err => {
-        if (err.status == 400) {
           this.shoppingCartService.fetchItems().subscribe(res => {
             this.items.set(res)
           })
-        }
+        
         throw err
       }
     })
