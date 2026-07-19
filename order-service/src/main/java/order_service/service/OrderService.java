@@ -8,11 +8,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException.Forbidden;
 
-import jakarta.ws.rs.BadRequestException;
 import lombok.RequiredArgsConstructor;
 import order_service.dto.ProductDTO.ProductOutput;
+import order_service.exception.BadRequestException;
 import order_service.exception.NotFoundException;
 import order_service.model.CartItem;
 import order_service.model.OrderDetails;
@@ -37,9 +36,6 @@ public class OrderService {
     private final ProductClient productClient;
 
     public Map<String, Object> createOrder(String currentUserId) {
-
-        // ProductOutput product = this.productClient.get(cartItemData.productId());
-
         ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(currentUserId)
                 .orElseThrow(() -> new NotFoundException("Whoops! shopping cart not found."));
 
@@ -48,22 +44,22 @@ public class OrderService {
                 .status("PENDING")
                 .total(0.)
                 .build();
+
         OrderDetails savedOrder = orderDetailsRepository.save(orderDetails);
 
-        List<OrderItem> orderItems = cartItemRepository.findByShoppingCartId(shoppingCart.getId())
-                .stream()
-                .map(
-                        item -> {
-                            ProductOutput product = this.productClient.get(item.getProductId());
-                            if (product.quantity() < item.getQuantity()){
-                                throw new BadRequestException("Not enough available quantity.");
-                            }
-                            return cartItemToOrderItem(item, savedOrder.getId(), product.price());
-                        }
-                    )
-                .toList();
+        List<CartItem> cartItems = cartItemRepository.findByShoppingCartId(shoppingCart.getId());
+        List<OrderItem> orderItems = cartItems.stream().map(item -> {
+            ProductOutput product = this.productClient.get(item.getProductId());
+            if (product.quantity() < item.getQuantity()) {
+                throw new BadRequestException("Not enough available quantity.");
+            }
+            return cartItemToOrderItem(item, savedOrder.getId(), product.price());
+        }).toList();
 
         orderItemsRepository.saveAll(orderItems);
+
+        shoppingCartRepository.delete(shoppingCart);
+        cartItemRepository.deleteAll(cartItems);
 
         Map<String, Object> response = new HashMap<>();
         response.put("order_details", savedOrder);

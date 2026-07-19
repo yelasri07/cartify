@@ -14,6 +14,7 @@ import { CreateProductComponent } from '../../../../shared/components/create-pro
 import '@tailwindplus/elements';
 import { Router } from '@angular/router';
 import { PopupService } from '../../../../core/services/popup.service';
+import { ShoppingCartService } from '../../../../core/services/shopping-cart.service';
 
 @Component({
   selector: 'app-product-card',
@@ -25,10 +26,13 @@ import { PopupService } from '../../../../core/services/popup.service';
 export class ProductCardComponent {
   private popupService = inject(PopupService)
   private router = inject(Router)
+  private shoppingCartService = inject(ShoppingCartService)
+  private popup = inject(PopupService)
 
   product = input.required<Product>();
   currentUser = inject(AuthStateService);
   selectedImageIndex = signal(0);
+  isAddedToShoppingCart = signal(false)
 
   currentDrawerImage = computed(
     () => this.drawerImages()[this.selectedImageIndex()],
@@ -67,5 +71,12 @@ export class ProductCardComponent {
     }
 
     this.router.navigate(['/profile', this.product().user_id])
+  }
+
+  addItem(productId: string) {
+    this.shoppingCartService.createItem(productId, 1).subscribe(res => {
+      this.popup.showSuccess("Product added successfully.")
+      this.isAddedToShoppingCart.set(true)
+    })
   }
 }

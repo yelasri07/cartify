@@ -26,16 +26,14 @@
 
   <!-- Product Image Container -->
   <div class="relative h-56 overflow-hidden bg-secondary">
-    <img
-      [src]="productImage()"
-      [alt]="product().name"
-      class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-    />
+    <img [src]="productImage()" [alt]="product().name"
+      class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
     @if (product().status == 'PENDING'){
 
-      <div class="absolute -left-8 bottom-4 w-32 rotate-[45deg] bg-amber-500 text-white text-center py-1 text-sm font-bold shadow-md select-none">
-        PENDING
-      </div>
+    <div
+      class="absolute -left-8 bottom-4 w-32 rotate-45 bg-amber-500 text-white text-center py-1 text-sm font-bold shadow-md select-none">
+      PENDING
+    </div>
     }
     @if (isOutOfStock()) {
     <div class="absolute inset-0 flex items-center justify-center bg-dark/40 backdrop-blur-[2px]">
@@ -89,10 +87,21 @@
     </div> -->
 
     <!-- Action Button -->
-    <button command="show-modal" [attr.commandfor]="'drawer-' + product().id" [disabled]="isOutOfStock()"
-      class="w-full rounded-xl cursor-pointer bg-dark py-3.5 text-sm font-bold text-primary transition-all hover:bg-accent active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-secondary disabled:text-accent/50">
-      View Details
-    </button>
+    <div class="flex gap-3">
+      <button command="show-modal" [attr.commandfor]="'drawer-' + product().id" [disabled]="isOutOfStock()"
+        class="w-full rounded-xl cursor-pointer bg-dark py-3.5 text-sm font-bold text-primary transition-all hover:bg-accent active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-secondary disabled:text-accent/50">
+        View Details
+      </button>
+      <!-- Add item -->
+      @if (!isAddedToShoppingCart() && product().status != "PENDING") {
+      <button (click)="addItem(product().id)"
+        class="bg-dark px-3 cursor-pointer rounded-xl hover:bg-accent transition duration-200"><svg
+          class="w-5 fill-primary" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+          <path
+            d="M352 128C352 110.3 337.7 96 320 96C302.3 96 288 110.3 288 128L288 288L128 288C110.3 288 96 302.3 96 320C96 337.7 110.3 352 128 352L288 352L288 512C288 529.7 302.3 544 320 544C337.7 544 352 529.7 352 512L352 352L512 352C529.7 352 544 337.7 544 320C544 302.3 529.7 288 512 288L352 288L352 128z" />
+        </svg></button>
+      }
+    </div>
 
     <el-dialog>
       <dialog [id]="'drawer-' + product().id" aria-labelledby="drawer-title"
@@ -188,7 +197,7 @@
                   </h3>
                   <button (click)="navigateToProfile()" type="button" command="close"
                     [attr.commandfor]="'drawer-' + product().id"
-                    class="flex w-full justify-start cursor-pointer items-center gap-4 p-5 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-sm transition-colors hover:bg-white/[0.08]">
+                    class="flex w-full justify-start cursor-pointer items-center gap-4 p-5 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-sm transition-colors hover:bg-white/8">
                     <div class="h-14 w-14 overflow-hidden rounded-2xl border border-white/10 shadow-inner">
                       <img [src]="
                           product().user_infos?.avatar ||
