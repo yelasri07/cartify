@@ -9,7 +9,7 @@ services:
       - "50000:50000"
     volumes:
       - jenkins_home:/var/jenkins_home
-      - /run/user/1023/docker.sock:/var/run/docker.sock 
+      - /run/user/1165/docker.sock:/var/run/docker.sock 
     user: root 
     networks:
       - ci-net
