@@ -6,6 +6,10 @@ pipeline {
         }
     }
 
+    environment {
+        TESTCONTAINERS_RYUK_DISABLED = 'true'
+    }
+
     stages {
         stage('Build') {
             steps {
