@@ -28,6 +28,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                                 .csrf(csrf -> csrf.disable())
                                 .authorizeHttpRequests(auth -> auth
                                                 .requestMatchers("/auth/**").permitAll()
+                                                .requestMatchers(HttpMethod.POST, "/carts").hasRole("CLIENT")
                                                 .requestMatchers(HttpMethod.POST, "/products").hasRole("SELLER")
                                                 .requestMatchers(HttpMethod.PUT, "/products/**").hasRole("SELLER")
                                                 .requestMatchers(HttpMethod.DELETE, "/products/**")
