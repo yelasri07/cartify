@@ -18,6 +18,13 @@ public interface ProductRepository extends MongoRepository<Product, String> {
 
     Page<Product> findByStatus(ProductStatus status, Pageable pageable);
 
+    Page<Product> findByStatusAndNameContainingIgnoreCaseOrStatusAndDescriptionContainingIgnoreCase(
+            ProductStatus status1,
+            String name,
+            ProductStatus status2,
+            String description,
+            Pageable pageable);
+
     List<Product> findByIdIn(final Set<String> productIds);
 
 }

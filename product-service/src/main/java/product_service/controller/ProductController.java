@@ -39,9 +39,11 @@ public class ProductController {
     @GetMapping
     public List<ProductOutput> getAll(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "") String search,
+            @RequestParam(defaultValue = "id") String sortedBy) {
 
-        return this.productService.getProducts(page, size, null);
+        return this.productService.getProducts(page, size, null, search, sortedBy);
     }
 
     @GetMapping("/users/{id}")
@@ -49,7 +51,7 @@ public class ProductController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
-        return this.productService.getProducts(page, size, userId);
+        return this.productService.getProducts(page, size, userId, "", "id");
     }
 
     @GetMapping("/{id}")
