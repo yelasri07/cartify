@@ -16,43 +16,41 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig implements WebMvcConfigurer {
 
-        private final JwtAuthenticationFilter jwtAuthenticationFilter;
-        private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
-        private final CustomAccessDeniedHandler customAccessDeniedHandler;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
-        @Bean
-        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-                http
-                                .cors(cors -> {
-                                })
-                                .csrf(csrf -> csrf.disable())
-                                .authorizeHttpRequests(auth -> auth
-                                                .requestMatchers("/auth/**").permitAll()
-                                                .requestMatchers(HttpMethod.POST, "/carts").hasRole("CLIENT")
-                                                .requestMatchers(HttpMethod.POST, "/products").hasRole("SELLER")
-                                                .requestMatchers(HttpMethod.PUT, "/products/**").hasRole("SELLER")
-                                                .requestMatchers(HttpMethod.DELETE, "/products/**")
-                                                .hasRole("SELLER")
-                                                .requestMatchers(HttpMethod.POST, "/media")
-                                                .hasRole("SELLER")
-                                                .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
-                                                .anyRequest().authenticated())
-                                .exceptionHandling(ex -> ex
-                                                .authenticationEntryPoint(customAuthenticationEntryPoint)
-                                                .accessDeniedHandler(customAccessDeniedHandler))
-                                .sessionManagement(session -> session
-                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-                return http.build();
-        }
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .cors(cors -> {
+                })
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/carts").hasRole("CLIENT")
+                        .requestMatchers(HttpMethod.POST, "/products").hasRole("SELLER")
+                        .requestMatchers(HttpMethod.PUT, "/products/**").hasRole("SELLER")
+                        .requestMatchers(HttpMethod.DELETE, "/products/**")
+                        .hasRole("SELLER")
+                        .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
+                        .anyRequest().authenticated())
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(customAuthenticationEntryPoint)
+                        .accessDeniedHandler(customAccessDeniedHandler))
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        return http.build();
+    }
 
-        @Override
-        public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                                .allowedOrigins("https://localhost:4200")
-                                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                                .allowedHeaders("*")
-                                .allowCredentials(true);
-        }
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("https://localhost:4200")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*")
+                .allowCredentials(true);
+    }
 
 }

@@ -32,7 +32,7 @@ export class ShoppingCartComponent implements OnInit, OnDestroy {
     document.body.classList.add('overflow-hidden');
     this.shoppingCartService.fetchItems().subscribe(res => {
       this.items.set(res)
-      // console.log(this.items());
+      console.log(this.items());
     })
   }
 

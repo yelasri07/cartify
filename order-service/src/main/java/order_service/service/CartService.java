@@ -73,12 +73,19 @@ public class CartService {
 
         final ShoppingCart shoppingCart = existingShoppingCart.get();
 
-        final List<CartItem> cartItems = cartItemRepository.findByShoppingCartId(shoppingCart.getId());
+        List<CartItem> cartItems = cartItemRepository.findByShoppingCartId(shoppingCart.getId());
         final Set<String> productIds = cartItems.stream().map(item -> item.getProductId()).collect(Collectors.toSet());
 
         Map<String, ProductOutput> products = this.productClient.getProductsCarts(productIds)
                 .stream().collect(Collectors.toMap(ProductOutput::id, Function.identity()));
 
+        cartItems.stream().forEach(item -> {
+            if (products.get(item.getProductId()) == null) {
+                this.cartItemRepository.deleteById(item.getId());
+            }
+        });
+
+        cartItems = cartItems.stream().filter(item -> products.get(item.getProductId()) != null).toList();
         return cartItems.stream().map(item -> CartItemMapper.toCartItemOutput(item, products.get(item.getProductId())))
                 .toList();
     }

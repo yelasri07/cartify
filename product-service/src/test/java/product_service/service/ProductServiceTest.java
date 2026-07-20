@@ -122,7 +122,9 @@ public class ProductServiceTest {
             // Arrange
             final int page = 0;
             final int size = 10;
-            when(productRepository.findByStatus(any(), any()))
+            when(productRepository
+                    .findByStatusAndNameContainingIgnoreCaseOrStatusAndDescriptionContainingIgnoreCase(
+                            any(), any(), any(), any(), any()))
                     .thenReturn(new PageImpl<Product>(List.of(productResponse)));
             when(userClient.getUserProducts(any()))
                     .thenReturn(Map.of("user-123", userResponse));
@@ -131,12 +133,13 @@ public class ProductServiceTest {
                             List.of("url3", "url4")));
 
             // Act
-            List<ProductOutput> products = productService.getProducts(page, size, null, anyString(), anyString());
+            List<ProductOutput> products = productService.getProducts(page, size, null, "", "id");
 
             // Assert
             assertNotNull(products);
             assertEquals(1, products.size());
-            verify(productRepository).findByStatus(any(), any());
+            verify(productRepository).findByStatusAndNameContainingIgnoreCaseOrStatusAndDescriptionContainingIgnoreCase(
+                    any(), any(), any(), any(), any());
             verify(productRepository, times(0)).findByUserId(any(), any());
             verify(userClient).getUserProducts(any());
             verify(mediaClient).getMediaProducts(any());
@@ -158,7 +161,8 @@ public class ProductServiceTest {
                             List.of("url3", "url4")));
 
             // Act
-            List<ProductOutput> products = productService.getProducts(page, size, userId, anyString(), anyString());
+            List<ProductOutput> products = productService.getProducts(page, size, userId, "",
+                    "id");
 
             // Assert
             assertNotNull(products);
@@ -179,7 +183,7 @@ public class ProductServiceTest {
 
             // Act & Assert
             BadRequestException exception = assertThrows(BadRequestException.class,
-                    () -> productService.getProducts(page, size, userId, anyString(), anyString()));
+                    () -> productService.getProducts(page, size, userId, "", "id"));
 
             assertNotNull(exception);
             assertEquals("Max size is: 100", exception.getMessage());
