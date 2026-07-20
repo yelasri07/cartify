@@ -34,7 +34,7 @@ pipeline {
                     dir('frontend') {
                         withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
                             withSonarQubeEnv('sonar-server') {
-                                sh 'npm install -g @sonar/scan'
+                                sh 'npm install -g @sonar/scan@4.3.8'
                                 sh '''sonar \
                                     -Dsonar.host.url=http://sonarqube:9000 \
                                     -Dsonar.projectKey=frontend \
