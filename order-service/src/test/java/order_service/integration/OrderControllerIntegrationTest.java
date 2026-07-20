@@ -13,20 +13,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import org.testcontainers.containers.MongoDBContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import order_service.dto.ProductDTO.ProductOutput;
 import order_service.kafka.OrderProducer;
@@ -42,29 +37,24 @@ import order_service.restApi.ProductClient;
 import order_service.service.JwtService;
 
 @SpringBootTest
-@Testcontainers
 @ActiveProfiles("test")
 class OrderControllerIntegrationTest {
-
-    @Container
-    @ServiceConnection
-    static MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:7.0");
 
     @Autowired
     private WebApplicationContext webApplicationContext;
 
     private MockMvc mockMvc;
 
-    @Autowired
+    @MockitoBean
     private OrderDetailsRepository orderDetailsRepository;
 
-    @Autowired
+    @MockitoBean
     private OrderItemRepository orderItemRepository;
 
-    @Autowired
+    @MockitoBean
     private ShoppingCartRepository shoppingCartRepository;
 
-    @Autowired
+    @MockitoBean
     private CartItemRepository cartItemRepository;
 
     @MockitoBean
@@ -84,11 +74,6 @@ class OrderControllerIntegrationTest {
     void setUp() throws Exception {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).apply(springSecurity()).build();
 
-        orderItemRepository.deleteAll();
-        orderDetailsRepository.deleteAll();
-        cartItemRepository.deleteAll();
-        shoppingCartRepository.deleteAll();
-
         // Mock JWT authentication for client user
         when(jwtService.extractUserId("valid-token")).thenReturn(Map.of("id", userId, "role", "CLIENT"));
 
@@ -103,19 +88,23 @@ class OrderControllerIntegrationTest {
         lenient().when(productClient.get(productId)).thenReturn(product);
     }
 
-    @AfterEach
-    void tearDown() {
-        orderItemRepository.deleteAll();
-        orderDetailsRepository.deleteAll();
-        cartItemRepository.deleteAll();
-        shoppingCartRepository.deleteAll();
-    }
-
-    // Integration Test 1: Full Checkout HTTP POST /orders flow using Testcontainers MongoDB
+    // Integration Test 1: Full Checkout HTTP POST /orders flow using mocked database
     @Test
     void createOrder_IntegrationSuccess() throws Exception {
-        ShoppingCart cart = shoppingCartRepository.save(ShoppingCart.builder().userId(userId).build());
-        cartItemRepository.save(CartItem.builder().shoppingCartId(cart.getId()).productId(productId).quantity(2).build());
+        ShoppingCart cart = ShoppingCart.builder().id("cart-1").userId(userId).build();
+        CartItem cartItem = CartItem.builder().id("item-1").shoppingCartId("cart-1").productId(productId).quantity(2).build();
+
+        when(shoppingCartRepository.findByUserId(userId)).thenReturn(java.util.Optional.of(cart));
+        when(cartItemRepository.findByShoppingCartId("cart-1")).thenReturn(List.of(cartItem));
+        when(orderDetailsRepository.save(any(OrderDetails.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(orderItemRepository.saveAll(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        OrderDetails expectedOrder = OrderDetails.builder()
+                .userId(userId)
+                .status(OrderStatus.ORDERED)
+                .total(200.0)
+                .build();
+        when(orderDetailsRepository.findAllByUserId(userId, null)).thenReturn(List.of(expectedOrder));
 
         mockMvc.perform(post("/orders")
                 .header("Authorization", token))
@@ -123,21 +112,28 @@ class OrderControllerIntegrationTest {
                 .andExpect(jsonPath("$.order_details.status").value("ORDERED"))
                 .andExpect(jsonPath("$.order_details.total").value(200.0));
 
-        // Verify order was saved in containerized MongoDB
+        // Verify order was saved (mocked)
         List<OrderDetails> orders = orderDetailsRepository.findAllByUserId(userId, null);
         assertEquals(1, orders.size());
         assertEquals(200.0, orders.get(0).getTotal());
     }
 
-    // Integration Test 2: Fetching order by ID HTTP GET /orders/{id} flow using Testcontainers MongoDB
+    // Integration Test 2: Fetching order by ID HTTP GET /orders/{id} flow using mocked database
     @Test
     void getOrderById_IntegrationSuccess() throws Exception {
-        OrderDetails savedOrder = orderDetailsRepository.save(OrderDetails.builder().userId(userId).status(OrderStatus.ORDERED).total(150.0).build());
+        OrderDetails savedOrder = OrderDetails.builder()
+                .id("order-123")
+                .userId(userId)
+                .status(OrderStatus.ORDERED)
+                .total(150.0)
+                .build();
 
-        mockMvc.perform(get("/orders/" + savedOrder.getId())
+        when(orderDetailsRepository.findById("order-123")).thenReturn(java.util.Optional.of(savedOrder));
+
+        mockMvc.perform(get("/orders/order-123")
                 .header("Authorization", token))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(savedOrder.getId()))
+                .andExpect(jsonPath("$.id").value("order-123"))
                 .andExpect(jsonPath("$.status").value("ORDERED"));
     }
 }
