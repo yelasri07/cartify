@@ -17,6 +17,7 @@ SERVICES=(
     "media-service"
     "product-service"
     "user-service"
+    "order-service"
 )
 
 # Loop through each service and build
