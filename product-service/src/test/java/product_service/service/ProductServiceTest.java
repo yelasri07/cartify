@@ -131,7 +131,7 @@ public class ProductServiceTest {
                             List.of("url3", "url4")));
 
             // Act
-            List<ProductOutput> products = productService.getProducts(page, size, null);
+            List<ProductOutput> products = productService.getProducts(page, size, null, anyString(), anyString());
 
             // Assert
             assertNotNull(products);
@@ -158,7 +158,7 @@ public class ProductServiceTest {
                             List.of("url3", "url4")));
 
             // Act
-            List<ProductOutput> products = productService.getProducts(page, size, userId);
+            List<ProductOutput> products = productService.getProducts(page, size, userId, anyString(), anyString());
 
             // Assert
             assertNotNull(products);
@@ -179,7 +179,7 @@ public class ProductServiceTest {
 
             // Act & Assert
             BadRequestException exception = assertThrows(BadRequestException.class,
-                    () -> productService.getProducts(page, size, userId));
+                    () -> productService.getProducts(page, size, userId, anyString(), anyString()));
 
             assertNotNull(exception);
             assertEquals("Max size is: 100", exception.getMessage());

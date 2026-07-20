@@ -48,15 +48,19 @@ public class ProductService {
         return ProductMapper.toProductOutputDto(createdProduct, null, null);
     }
 
-    public List<ProductOutput> getProducts(int page, int size, String userId) {
+    public List<ProductOutput> getProducts(int page, int size, String userId, String search, String sortedBy) {
         if (size > 100) {
             throw new BadRequestException("Max size is: 100");
         }
 
-        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "id");
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, sortedBy);
+
         List<Product> entities = userId == null
-                ? this.productRepository.findByStatus(ProductStatus.ACTIVE, pageable).getContent() // For home page
-                                                                                                   // products
+                ? this.productRepository
+                        .findByStatusAndNameContainingIgnoreCaseOrStatusAndDescriptionContainingIgnoreCase(
+                                ProductStatus.ACTIVE, search, ProductStatus.ACTIVE, search, pageable)
+                        .getContent() // For home page
+                // products
                 : this.productRepository.findByUserId(userId, pageable).getContent(); // For profile page products
 
         return this.getUsersAndMediaOfProducts(entities);
