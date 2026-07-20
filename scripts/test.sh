@@ -3,9 +3,6 @@
 # Stop the script if any command fails
 set -e
 
-# Disable Ryuk for compatibility with rootless Docker in Jenkins CI agent
-export TESTCONTAINERS_RYUK_DISABLED=true
-
 # Define the colors for output
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
