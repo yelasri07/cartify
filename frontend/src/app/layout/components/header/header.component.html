@@ -22,7 +22,9 @@
               Home
             </span>
           </li>
-          <li class="relative" (click)="this.isVisibleShoppingCart.set(true)">
+
+          @if (isAuthenticated() && user()?.role?.toString() == "CLIENT"){
+            <li class="relative" (click)="this.isVisibleShoppingCart.set(true)">
             <svg class="w-6 cursor-pointer" xmlns="http://www.w3.org/2000/svg" viewBox="-0.5 0 25 25" fill="none">
               <path
                 d="M18.5996 21.57C19.7042 21.57 20.5996 20.6746 20.5996 19.57C20.5996 18.4654 19.7042 17.57 18.5996 17.57C17.495 17.57 16.5996 18.4654 16.5996 19.57C16.5996 20.6746 17.495 21.57 18.5996 21.57Z"
@@ -38,13 +40,12 @@
               class="hidden absolute w-max bg-secondary top-[150%] py-1 px-2 text-[12px] rounded-lg left-1/2 -translate-x-1/2">
               Shopping cart
             </span>
-          </li>
+          </li>}
         </ul>
       </nav>
       @if (isAuthenticated()) {
       <!-- Auth Actions -->
       <div class="relative">
-        @if (user()?.role?.toString() == "SELLER") {
         <div class="profile flex items-center gap-3 cursor-pointer px-1 py-2 rounded-lg" (click)="showMenu($event)">
           <div
             class="cursor-pointer h-10 w-10 overflow-hidden rounded-full border-2 border-secondary shadow-sm transition-transform">
@@ -97,7 +98,7 @@
           </div>
         </div>
         }
-        }
+
       </div>
       } @else {
       <div class="flex items-center gap-6">

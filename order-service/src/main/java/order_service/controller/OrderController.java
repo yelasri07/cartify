@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
+import order_service.dto.OrderDTO.SoldProductOutput;
 import order_service.model.OrderDetails;
 import order_service.model.OrderItem;
 import order_service.service.OrderService;
@@ -57,23 +58,22 @@ public class OrderController {
     }
 
     @PutMapping("/{id}/cancel")
-    public ResponseEntity<?> cancelOrder(@PathVariable String id) {
-        // TODO: cancel order if status allows it
-        return null;
+    public OrderDetails cancelOrder(@PathVariable String id) throws Exception {
+        return orderService.cancelOrder(id);
     }
 
     @PostMapping("/{id}/redo")
-    public ResponseEntity<?> redoOrder(@PathVariable String id) {
-        // TODO: create new order using old order's items
-        return null;
+    public OrderDetails redoOrder(@PathVariable String id) throws Exception {
+        return orderService.redoOrder(id);
     }
 
     // ---------- Seller-facing ----------
 
     @GetMapping("/seller")
-    public ResponseEntity<?> getSellerOrders(@RequestParam(required = false) String status) {
-        // TODO: list orders containing this seller's products
-        return null;
+    public List<SoldProductOutput> getSellerOrders(
+            @AuthenticationPrincipal String currentUserId,
+            @RequestParam(required = false) String status) {
+        return orderService.getSellerOrders(currentUserId, status);
     }
 
     @PutMapping("/{id}/status")

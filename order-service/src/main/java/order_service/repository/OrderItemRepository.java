@@ -10,4 +10,5 @@ import order_service.model.OrderItem;
 @Repository
 public interface OrderItemRepository extends MongoRepository<OrderItem, String> {
     List<OrderItem> findAllByOrderId(String orderId);
+    void deleteByOrderId(String orderId);
 }
