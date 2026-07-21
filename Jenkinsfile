@@ -149,7 +149,7 @@ pipeline {
             setBuildStatus('Build succeeded', 'SUCCESS')
             script {
                 mail(
-                    to: 'adnane.elmir1@gmail.com, elasriyoussef604@gmail.com',
+                    to: 'elasriyoussef604@gmail.com',
                     subject: "✅ SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                     body: "Build passed.\nLogs: ${env.BUILD_URL}"
                 )
@@ -159,7 +159,7 @@ pipeline {
             setBuildStatus('Build failed', 'FAILURE')
             script {
                 mail(
-                    to: 'adnane.elmir1@gmail.com, elasriyoussef604@gmail.com',
+                    to: 'elasriyoussef604@gmail.com',
                     subject: "❌ FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                     body: "Build failed.\nLogs: ${env.BUILD_URL}console"
                 )
