@@ -12,7 +12,7 @@ echo -e "${BLUE}🔨 Starting Multi-Service deploy Process...${NC}\n"
 
 # Array of service directories
 SERVICES=(
-    # "api-gateway"
+    "api-gateway"
     # "discovery-service"
     # "media-service"
     "product-service"
