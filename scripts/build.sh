@@ -32,7 +32,7 @@ for SERVICE in "${SERVICES[@]}"; do
             chmod +x mvnw
             # Clean and Package
             ./mvnw clean package -DskipTests
-            ./mvnw deploy
+            ./mvnw deploy -DNEXUS_HOST=nexus
         )
         
         echo -e "${GREEN}✅ Successfully built $SERVICE${NC}\n"

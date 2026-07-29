@@ -140,32 +140,32 @@ pipeline {
         // }
     }
 
-    post {
-        always {
-            junit testResults: '**/target/surefire-reports/*.xml', allowEmptyResults: true
-            archiveArtifacts artifacts: '**/target/surefire-reports/*.xml, frontend/coverage/**', allowEmptyArchive: true
-        }
-        success {
-            setBuildStatus('Build succeeded', 'SUCCESS')
-            script {
-                mail(
-                    to: 'elasriyoussef604@gmail.com',
-                    subject: "✅ SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                    body: "Build passed.\nLogs: ${env.BUILD_URL}"
-                )
-            }
-        }
-        failure {
-            setBuildStatus('Build failed', 'FAILURE')
-            script {
-                mail(
-                    to: 'elasriyoussef604@gmail.com',
-                    subject: "❌ FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                    body: "Build failed.\nLogs: ${env.BUILD_URL}console"
-                )
-            }
-        }
-    }
+    // post {
+    //     always {
+    //         junit testResults: '**/target/surefire-reports/*.xml', allowEmptyResults: true
+    //         archiveArtifacts artifacts: '**/target/surefire-reports/*.xml, frontend/coverage/**', allowEmptyArchive: true
+    //     }
+    //     success {
+    //         setBuildStatus('Build succeeded', 'SUCCESS')
+    //         script {
+    //             mail(
+    //                 to: 'elasriyoussef604@gmail.com',
+    //                 subject: "✅ SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+    //                 body: "Build passed.\nLogs: ${env.BUILD_URL}"
+    //             )
+    //         }
+    //     }
+    //     failure {
+    //         setBuildStatus('Build failed', 'FAILURE')
+    //         script {
+    //             mail(
+    //                 to: 'elasriyoussef604@gmail.com',
+    //                 subject: "❌ FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+    //                 body: "Build failed.\nLogs: ${env.BUILD_URL}console"
+    //             )
+    //         }
+    //     }
+    // }
 }
 
 void setBuildStatus(String message, String state) {
