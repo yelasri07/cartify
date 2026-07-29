@@ -53,7 +53,7 @@ pipeline {
                             cp "$SSL_CERT" frontend/secureCertificate.crt
                             cp "$SSL_KEY" frontend/private.key
                             cp "$SSL_PASSPHRASE" frontend/securePassphrase
-                            ./scripts/build.sh
+                            ./scripts/deploy_to_nexus.sh
                             docker compose -p cartify up -d --build
                         '''
                             error "Deployment failed, rolled back to previous successful commit ${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}"
