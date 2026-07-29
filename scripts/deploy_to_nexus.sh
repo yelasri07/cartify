@@ -31,7 +31,7 @@ for SERVICE in "${SERVICES[@]}"; do
             # Ensure Maven Wrapper is executable
             chmod +x mvnw
             # Clean and Package
-            ./mvnw clean deploy -DskipTests -DNEXUS_HOST=nexus
+            ./mvnw clean deploy -DNEXUS_HOST=nexus
         )
         
         echo -e "${GREEN}✅ Successfully deploy $SERVICE${NC}\n"
