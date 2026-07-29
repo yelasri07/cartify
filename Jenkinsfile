@@ -37,7 +37,7 @@ pipeline {
                     script {
                         try {
                             sh '''
-                            docker compose -p cartify down
+                            docker compose down
                             docker compose -p cartify up -d --build
                             docker compose ps
                         '''
@@ -47,7 +47,7 @@ pipeline {
                             }
                             echo "Deploy failed — rolling back to ${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}"
                             sh '''
-                            docker compose -p cartify down
+                            docker compose down
                             git checkout ${GIT_PREVIOUS_SUCCESSFUL_COMMIT}
                             cp "$ENV_FILE" .env
                             cp "$SSL_CERT" frontend/secureCertificate.crt
