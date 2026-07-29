@@ -5,6 +5,12 @@ services:
       - "nexus-data:/nexus-data"
     ports:
       - "8081:8081"
-  
+    networks:
+      - ci-net
+
+networks:
+  ci-net:
+    external: true
+
 volumes:
   nexus-data:
