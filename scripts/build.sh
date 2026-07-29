@@ -31,7 +31,8 @@ for SERVICE in "${SERVICES[@]}"; do
             # Ensure Maven Wrapper is executable
             chmod +x mvnw
             # Clean and Package
-            ./mvnw clean package
+            ./mvnw clean package -DskipTests
+            ./mvnw deploy
         )
         
         echo -e "${GREEN}✅ Successfully built $SERVICE${NC}\n"
