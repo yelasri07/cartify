@@ -1,6 +1,6 @@
 services:
   broker:
-    image: apache/kafka:latest
+    image: localhost:8081/docker-hub/apache/kafka:latest
     hostname: broker
     container_name: broker
     ports:
@@ -51,7 +51,7 @@ services:
     #   - 8080:8080
 
   user-db:
-    image: mongo
+    image: localhost:8081/docker-hub/mongo
     container_name: user_mongodb
     restart: always
     environment:
