@@ -13,11 +13,11 @@ echo -e "${BLUE}🔨 Starting Multi-Service deploy Process...${NC}\n"
 # Array of service directories
 SERVICES=(
     "api-gateway"
-    # "discovery-service"
-    # "media-service"
+    "discovery-service"
+    "media-service"
     "product-service"
-    # "user-service"
-    # "order-service"
+    "user-service"
+    "order-service"
 )
 
 # Loop through each service and build
