@@ -7,12 +7,12 @@ pipeline {
     }
 
     stages {
-        stage('Build & Test') {
-            steps {
-                echo 'Building..'
-                sh './scripts/deploy_to_nexus.sh'
-            }
-        }
+        // stage('Build & Test') {
+        //     steps {
+        //         echo 'Building..'
+        //         sh './scripts/deploy_to_nexus.sh'
+        //     }
+        // }
 
         stage('Deliver') {
             when {
