@@ -1,6 +1,6 @@
 services:
   broker:
-    image: apache/kafka:latest
+    image: localhost:8081/docker-hub/apache/kafka:latest
     hostname: broker
     container_name: broker
     ports:
