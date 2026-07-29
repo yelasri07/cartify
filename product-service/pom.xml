@@ -30,6 +30,7 @@
 	<properties>
 		<java.version>17</java.version>
 		<spring-cloud.version>2025.0.2</spring-cloud.version>
+		<nexus-url>http://localhost:8081</nexus-url>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -109,6 +110,27 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>nexus</id>
+			<url>${nexus-url}/repository/maven-snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<!-- <repositories>
+		<repository>
+			<id>nexus</id>
+			<url>http://localhost:8081/repository/maven-public/</url>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>nexus</id>
+			<url>http://localhost:8081/repository/maven-public/</url>
+		</pluginRepository>
+	</pluginRepositories> -->
 
 	<build>
 		<plugins>
